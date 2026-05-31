@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Snake Panel 🎮</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  height: 100%; overflow-y: auto;
+  background: #060614;
+  font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+  color: #fff;
+}
+
+.header {
+  padding: 18px 16px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header h1 { font-size: 20px; font-weight: 800; }
+.header .dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #555; transition: background .3s;
+}
+.dot.ok { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
+.dot.err{ background: #ff3366; }
+
+.section {
+  padding: 10px 14px 4px;
+}
+.section h2 {
+  font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,.35);
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-bottom: 10px;
+}
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid-1 { display: grid; grid-template-columns: 1fr; gap: 10px; }
+
+.btn {
+  padding: 16px 10px;
+  border: none; border-radius: 14px;
+  font-size: 14px; font-weight: 800;
+  cursor: pointer; text-align: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .1s, filter .1s;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+}
+.btn:active { transform: scale(.94); filter: brightness(.8); }
+.btn .be { font-size: 28px; }
+.btn .bl { font-size: 13px; }
+
+.btn-follow  { background: linear-gradient(135deg,#ff0050,#ff6699); color:#fff; }
+.btn-like    { background: linear-gradient(135deg,#db2777,#f472b6); color:#fff; }
+.btn-rose    { background: linear-gradient(135deg,#16a34a,#4ade80); color:#fff; }
+.btn-panda   { background: linear-gradient(135deg,#f97316,#fbbf24); color:#fff; }
+.btn-lion    { background: linear-gradient(135deg,#7c3aed,#a78bfa); color:#fff; }
+.btn-universe{ background: linear-gradient(135deg,#1e40af,#818cf8); color:#fff; }
+.btn-comment { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); color:#fff; }
+
+.input-row {
+  display: flex; gap: 8px; align-items: center;
+  margin-bottom: 10px;
+}
+input[type=text] {
+  flex: 1;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #fff; font-size: 14px;
+  outline: none;
+}
+input[type=text]::placeholder { color: rgba(255,255,255,.28); }
+input[type=text]:focus { border-color: rgba(0,255,136,.4); }
+
+.send-btn {
+  padding: 10px 16px;
+  background: #00cc66; color: #fff;
+  border: none; border-radius: 10px;
+  font-size: 13px; font-weight: 800;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.send-btn:active { transform: scale(.94); }
+
+.status-box {
+  margin: 12px 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 12px; color: rgba(255,255,255,.4);
+}
+#log { max-height: 80px; overflow-y: auto; }
+#log div { margin-bottom: 3px; }
+#log div.ok { color: #00ff88; }
+#log div.err { color: #ff6688; }
+
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,.06);
+  margin: 6px 14px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎮 Snake Panel</h1>
+  <div class="dot" id="dot" title="Status połączenia"></div>
+</div>
+
+<div class="status-box">
+  <div style="margin-bottom:6px;color:rgba(255,255,255,.6);font-weight:700;">Połączenie z serwerem</div>
+  <div class="input-row" style="margin-bottom:0">
+    <input type="text" id="wsUrl" value="ws://localhost:8080" placeholder="ws://localhost:8080">
+    <button class="send-btn" onclick="connect()">Połącz</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CUSTOM INPUTS -->
+<div class="section">
+  <h2>Customizacja</h2>
+  <div class="input-row">
+    <input type="text" id="iUser" placeholder="Nazwa użytkownika (np. fan123)" value="fan123">
+  </div>
+  <div class="input-row">
+    <input type="text" id="iComment" placeholder="Treść komentarza..." value="Wow, jesteś niesamowity!">
+  </div>
+</div>
+
+<!-- FOLLOW & LIKES -->
+<div class="section">
+  <h2>Follow & Lajki</h2>
+  <div class="grid-2">
+    <button class="btn btn-follow" onclick="send('follow')">
+      <span class="be">❤️</span><span class="bl">Follow</span>
+    </button>
+    <button class="btn btn-like" onclick="send('like')">
+      <span class="be">💖</span><span class="bl">50 Lajków</span>
+    </button>
+  </div>
+</div>
+
+<!-- GIFTS -->
+<div class="section">
+  <h2>Prezenty</h2>
+  <div class="grid-2">
+    <button class="btn btn-rose" onclick="send('gift-rose')">
+      <span class="be">🌹</span><span class="bl">Róża (mały)</span>
+    </button>
+    <button class="btn btn-rose" onclick="send('gift-sun')">
+      <span class="be">🌻</span><span class="bl">Słonecznik</span>
+    </button>
+    <button class="btn btn-panda" onclick="send('gift-panda')">
+      <span class="be">🐼</span><span class="bl">Panda (średni)</span>
+    </button>
+    <button class="btn btn-panda" onclick="send('gift-crown')">
+      <span class="be">👑</span><span class="bl">Korona (średni)</span>
+    </button>
+    <button class="btn btn-lion" onclick="send('gift-lion')">
+      <span class="be">🦁</span><span class="bl">Lew (MEGA)</span>
+    </button>
+    <button class="btn btn-universe" onclick="send('gift-universe')">
+      <span class="be">🌌</span><span class="bl">Wszechświat</span>
+    </button>
+  </div>
+</div>
+
+<!-- COMMENT -->
+<div class="section">
+  <h2>Komentarz</h2>
+  <div class="grid-1">
+    <button class="btn btn-comment" onclick="send('comment')" style="flex-direction:row;justify-content:center;padding:14px;">
+      <span style="font-size:20px;margin-right:8px;">💬</span>
+      <span class="bl">Wyślij komentarz</span>
+    </button>
+  </div>
+</div>
+
+<!-- LOG -->
+<div class="status-box" style="margin-top:6px;">
+  <div style="margin-bottom:6px;color:rgba(255,255,255,.6);font-weight:700;">Log zdarzeń</div>
+  <div id="log"><div style="color:rgba(255,255,255,.25)">Czekam na zdarzenia...</div></div>
+</div>
+
+<div style="height:24px;"></div>
+
+<script>
+let ws = null;
+
+const GIFTS = {
+  'gift-rose':     { emoji:'🌹', tier:1  },
+  'gift-sun':      { emoji:'🌻', tier:1  },
+  'gift-panda':    { emoji:'🐼', tier:5  },
+  'gift-crown':    { emoji:'👑', tier:5  },
+  'gift-lion':     { emoji:'🦁', tier:50 },
+  'gift-universe': { emoji:'🌌', tier:500},
+};
+
+function getUser()    { return document.getElementById('iUser').value.trim()    || 'fan123'; }
+function getComment() { return document.getElementById('iComment').value.trim() || 'Wow!'; }
+
+function send(type) {
+  const user = getUser();
+  let msg;
+  if (type === 'follow') {
+    msg = { type:'follow', username:user };
+  } else if (type === 'like') {
+    msg = { type:'like', count:50, username:user };
+  } else if (type === 'comment') {
+    msg = { type:'comment', username:user, text:getComment() };
+  } else if (GIFTS[type]) {
+    const g = GIFTS[type];
+    msg = { type:'gift', giftId:type, emoji:g.emoji, username:user, tier:g.tier };
+  }
+  if (!msg) return;
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(msg));
+    log(`Wysłano: ${type}`, true);
+  } else {
+    log('Brak połączenia z serwerem!', false);
+  }
+}
+
+function connect() {
+  const url = document.getElementById('wsUrl').value.trim();
+  if (ws) try { ws.close(); } catch {}
+  try {
+    ws = new WebSocket(url);
+    ws.onopen  = () => { setDot(true);  log('Połączono z ' + url, true); };
+    ws.onclose = () => { setDot(false); log('Rozłączono', false); };
+    ws.onerror = () => { setDot(false); log('Błąd połączenia', false); };
+  } catch(e) {
+    log('Nieprawidłowy URL: ' + e.message, false);
+  }
+}
+
+function setDot(ok) {
+  const d = document.getElementById('dot');
+  d.className = 'dot ' + (ok ? 'ok' : 'err');
+}
+
+function log(msg, ok) {
+  const el = document.getElementById('log');
+  const d  = document.createElement('div');
+  const t  = new Date().toLocaleTimeString('pl-PL');
+  d.textContent = `[${t}] ${msg}`;
+  d.className   = ok ? 'ok' : 'err';
+  el.insertBefore(d, el.firstChild);
+  while (el.children.length > 12) el.lastChild.remove();
+}
+
+// Auto-connect on load
+window.addEventListener('load', () => connect());
+</script>
+</body>
+</html>
