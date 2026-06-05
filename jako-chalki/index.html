@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sklep Chałki</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f0e8;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #8B4513;
+      color: #fff;
+      padding: 18px 40px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    header span { font-size: 1rem; font-weight: normal; opacity: 0.8; margin-left: 12px; }
+
+    .shop {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      padding: 60px 20px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.10);
+      width: 240px;
+      padding: 28px 20px 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      transition: transform 0.15s;
+    }
+
+    .card:hover { transform: translateY(-4px); }
+
+    .card-img {
+      width: 120px;
+      height: 140px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .card-img-placeholder {
+      width: 120px;
+      height: 140px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+
+    .card h2 { font-size: 1.15rem; color: #333; text-align: center; }
+
+    .card .price {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #8B4513;
+    }
+
+    .btn {
+      background: #8B4513;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 28px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn:hover { background: #6b3410; }
+
+    /* OVERLAY */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    #overlay.active { display: flex; }
+
+    /* paczka message */
+    #msg-paczka {
+      background: #fff;
+      border-radius: 20px;
+      padding: 48px 64px;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    }
+
+    /* EGG GAME */
+    #egg-game {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #egg-container {
+      cursor: pointer;
+      user-select: none;
+      width: 260px;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #egg-img {
+      width: 220px;
+      height: 260px;
+      object-fit: contain;
+      transform-origin: center bottom;
+      transition: none;
+    }
+
+    #egg-hint {
+      color: #fff;
+      font-size: 1.1rem;
+      opacity: 0.85;
+      text-align: center;
+    }
+
+    #click-count {
+      color: #ffd700;
+      font-size: 1rem;
+    }
+
+    /* VIDEO TRAP */
+    #video-trap {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    #video-trap.active { display: flex; }
+
+    #trap-iframe {
+      width: 85vw;
+      height: 75vh;
+      max-width: 1280px;
+      border: none;
+      border-radius: 12px;
+    }
+
+    #trap-msg {
+      color: #fff;
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    #fake-close {
+      margin-top: 8px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 8px;
+      padding: 8px 24px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    #fake-close:hover { background: rgba(255,255,255,0.25); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    @keyframes shake-light {
+      0%,100% { transform: rotate(0deg); }
+      20% { transform: rotate(-6deg); }
+      40% { transform: rotate(6deg); }
+      60% { transform: rotate(-4deg); }
+      80% { transform: rotate(4deg); }
+    }
+
+    @keyframes shake-medium {
+      0%,100% { transform: rotate(0deg) translateX(0); }
+      15% { transform: rotate(-10deg) translateX(-6px); }
+      30% { transform: rotate(10deg) translateX(6px); }
+      45% { transform: rotate(-8deg) translateX(-4px); }
+      60% { transform: rotate(8deg) translateX(4px); }
+      75% { transform: rotate(-5deg) translateX(-2px); }
+      90% { transform: rotate(5deg) translateX(2px); }
+    }
+
+    @keyframes shake-hard {
+      0%,100% { transform: rotate(0deg) translateX(0) translateY(0); }
+      10% { transform: rotate(-15deg) translateX(-10px) translateY(-4px); }
+      20% { transform: rotate(15deg) translateX(10px) translateY(4px); }
+      30% { transform: rotate(-12deg) translateX(-8px) translateY(-3px); }
+      40% { transform: rotate(12deg) translateX(8px) translateY(3px); }
+      50% { transform: rotate(-18deg) translateX(-12px) translateY(-5px); }
+      60% { transform: rotate(18deg) translateX(12px) translateY(5px); }
+      70% { transform: rotate(-10deg) translateX(-6px) translateY(-2px); }
+      80% { transform: rotate(10deg) translateX(6px) translateY(2px); }
+      90% { transform: rotate(-8deg) translateX(-4px) translateY(-1px); }
+    }
+
+    @keyframes hatch-out {
+      0% { transform: scale(1) rotate(0deg); opacity: 1; }
+      30% { transform: scale(1.3) rotate(-20deg); opacity: 1; }
+      60% { transform: scale(1.5) rotate(20deg); opacity: 0.7; }
+      100% { transform: scale(0) rotate(45deg); opacity: 0; }
+    }
+
+    .shake-light { animation: shake-light 0.35s ease; }
+    .shake-medium { animation: shake-medium 0.35s ease; }
+    .shake-hard { animation: shake-hard 0.35s ease; }
+    .hatch-out { animation: hatch-out 0.6s ease forwards; }
+
+    /* KETCHUP ATTACK */
+    #ketchup-layer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 200;
+      overflow: hidden;
+    }
+
+    #ketchup-bottle {
+      position: absolute;
+      bottom: 10%;
+      left: -160px;
+      font-size: 8rem;
+      line-height: 1;
+      transition: left 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.4));
+    }
+
+    #ketchup-bottle.slide-in { left: 40px; }
+    #ketchup-bottle.slide-out { left: -160px; }
+
+    .tomato-splat {
+      position: absolute;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .tomato-fly {
+      font-size: 2.2rem;
+      animation: tomatoFly var(--dur) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    .splat-blob {
+      width: var(--size);
+      height: calc(var(--size) * 0.55);
+      background: radial-gradient(ellipse at 40% 35%, #ff6b6b, #c0392b 60%, #922b21);
+      border-radius: 50% 45% 55% 50% / 60% 50% 65% 40%;
+      opacity: 0;
+      animation: splatAppear 0.25s ease forwards;
+      animation-delay: var(--dur);
+      position: relative;
+    }
+
+    .drip {
+      width: calc(var(--size) * 0.18);
+      background: linear-gradient(to bottom, #c0392b, #922b21);
+      border-radius: 0 0 50% 50%;
+      opacity: 0;
+      animation: dripDown 1.8s ease-in forwards;
+      animation-delay: calc(var(--dur) + 0.1s);
+      position: absolute;
+      top: 90%;
+      left: var(--drip-x);
+    }
+
+    @keyframes tomatoFly {
+      0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+      70%  { opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.4); opacity: 0; }
+    }
+
+    @keyframes splatAppear {
+      0%   { opacity: 0; transform: scale(0.3); }
+      60%  { opacity: 1; transform: scale(1.15); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes dripDown {
+      0%   { opacity: 1; height: 0; }
+      30%  { opacity: 1; height: calc(var(--size) * 0.5); }
+      80%  { opacity: 1; height: calc(var(--size) * 1.4); }
+      100% { opacity: 0.6; height: calc(var(--size) * 1.6); }
+    }
+
+    @keyframes fadeOutLayer {
+      0%   { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    #ketchup-layer.fade-out {
+      animation: fadeOutLayer 0.8s ease forwards;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  Sklep Cha&#322;ki
+  <span>&#8212; produkty pierwszej potrzeby</span>
+</header>
+
+<div class="shop">
+
+  <div class="card">
+    <img src="https://jakubserafin.github.io/jako-chalki/ketchup.png" alt="Ketchup" class="card-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="card-img-placeholder" style="background:#fff3cd;display:none;">&#127813;</div>
+    <h2>Ketchup Babuni</h2>
+    <div class="price">4,99 z&#322;</div>
+    <button class="btn" onclick="buyKetchup()">Dodaj do koszyka</button>
+  </div>
+
+  <div class="card">
+    <img src="https://jakubserafin.github.io/jako-chalki/musztarda.png" alt="Musztarda" class="card-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="card-img-placeholder" style="background:#fffde7;display:none;">&#127993;</div>
+    <h2>Musztarda Sarepska</h2>
+    <div class="price">3,49 z&#322;</div>
+    <button class="btn" onclick="buySimple()">Dodaj do koszyka</button>
+  </div>
+
+  <div class="card">
+    <img src="https://jakubserafin.github.io/jako-chalki/jajo.jpeg" alt="Jajo Cha&#322;ki" class="card-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="card-img-placeholder" style="background:#fef9f0;display:none;">&#129370;</div>
+    <h2>Jajo Cha&#322;ki</h2>
+    <div class="price">9,99 z&#322;</div>
+    <button class="btn" onclick="buyEgg()">Dodaj do koszyka</button>
+  </div>
+
+</div>
+
+<!-- KETCHUP ATTACK LAYER -->
+<div id="ketchup-layer">
+  <div id="ketchup-bottle">&#127870;</div>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay">
+
+  <!-- Paczka message -->
+  <div id="msg-paczka" style="display:none;">
+    &#128230; Paczka ju&#380; jedzie!
+    <div style="font-size:1rem;font-weight:normal;margin-top:12px;color:#666;">Dzi&#281;kujemy za zakup!</div>
+    <button class="btn" style="margin-top:24px;font-size:0.9rem;" onclick="closeOverlay()">Zamknij</button>
+  </div>
+
+  <!-- Egg game -->
+  <div id="egg-game" style="display:none;">
+    <div id="egg-hint">Kliknij w jajko, &#380;eby je wyklu&#263;!</div>
+    <div id="egg-container" onclick="clickEgg()">
+      <img id="egg-img" src="https://jakubserafin.github.io/jako-chalki/jajo.jpeg" alt="Jajo Cha&#322;ki"
+           onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 240%22><ellipse cx=%22100%22 cy=%22120%22 rx=%2280%22 ry=%22110%22 fill=%22%23f5f0d8%22/><circle cx=%2275%22 cy=%22110%22 r=%2222%22 fill=%22white%22/><circle cx=%22125%22 cy=%22110%22 r=%2222%22 fill=%22white%22/><circle cx=%2278%22 cy=%22113%22 r=%228%22 fill=%22%23111%22/><circle cx=%22128%22 cy=%22113%22 r=%228%22 fill=%22%23111%22/></svg>'">
+    </div>
+    <div id="click-count">Klikni&#281;cia: 0 / 10</div>
+  </div>
+
+</div>
+
+<!-- VIDEO TRAP - nie mozna wyjsc -->
+<div id="video-trap">
+  <iframe
+    id="trap-iframe"
+    src=""
+    allow="autoplay; encrypted-media; fullscreen"
+    allowfullscreen
+  ></iframe>
+  <p id="trap-msg">&#128520; NIE MO&#379;ESZ ST&#260;D WYJ&#346;&#262;! &#128520;</p>
+  <button id="fake-close" onclick="fakeTryClose()">Zamknij [X]</button>
+</div>
+
+<script>
+  // === PTOSZEK-STYLE PAGE LOCK ===
+
+  // Block back button
+  history.pushState(null, null, location.href);
+  window.addEventListener('popstate', function() {
+    history.pushState(null, null, location.href);
+  });
+
+  // Warn on page leave
+  window.addEventListener('beforeunload', function(e) {
+    e.preventDefault();
+    e.returnValue = 'Naprawde chcesz opuscic Sklep Chalki?';
+    return 'Naprawde chcesz opuscic Sklep Chalki?';
+  });
+
+  // Block F5, Ctrl+R, Ctrl+W, Ctrl+F4
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'F5' ||
+        (e.ctrlKey && (e.key === 'r' || e.key === 'R')) ||
+        (e.ctrlKey && (e.key === 'w' || e.key === 'W')) ||
+        (e.ctrlKey && e.key === 'F4')) {
+      e.preventDefault();
+      showTrapIfNotActive();
+    }
+  });
+
+  function showTrapIfNotActive() {
+    const trap = document.getElementById('video-trap');
+    if (!trap.classList.contains('active')) {
+      activateTrap();
+    }
+  }
+
+  // === KETCHUP ===
+  let ketchupTimeout = null;
+
+  function buySimple() {
+    document.getElementById('overlay').classList.add('active');
+    document.getElementById('msg-paczka').style.display = 'block';
+    document.getElementById('egg-game').style.display = 'none';
+  }
+
+  function buyKetchup() {
+    buySimple();
+    if (ketchupTimeout) clearTimeout(ketchupTimeout);
+    ketchupTimeout = setTimeout(launchKetchupAttack, 15000);
+  }
+
+  function launchKetchupAttack() {
+    const layer = document.getElementById('ketchup-layer');
+    const bottle = document.getElementById('ketchup-bottle');
+    layer.style.display = 'block';
+    layer.classList.remove('fade-out');
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { bottle.classList.add('slide-in'); });
+    });
+
+    setTimeout(() => {
+      for (let i = 0; i < 12; i++) {
+        setTimeout(() => throwTomato(layer, bottle), i * 280);
+      }
+    }, 900);
+
+    setTimeout(() => {
+      bottle.classList.remove('slide-in');
+      bottle.classList.add('slide-out');
+      layer.classList.add('fade-out');
+      layer.addEventListener('animationend', () => {
+        layer.style.display = 'none';
+        layer.classList.remove('fade-out');
+        bottle.classList.remove('slide-out');
+        layer.querySelectorAll('.tomato-splat').forEach(el => el.remove());
+      }, { once: true });
+    }, 900 + 5000);
+  }
+
+  function throwTomato(layer, bottle) {
+    const bottleRect = bottle.getBoundingClientRect();
+    const startX = bottleRect.right - 20;
+    const startY = bottleRect.top + bottleRect.height * 0.3;
+
+    const tx = (Math.random() * window.innerWidth * 0.75 + window.innerWidth * 0.1) - startX;
+    const ty = (Math.random() * window.innerHeight * 0.7 + window.innerHeight * 0.05) - startY;
+    const rot = (Math.random() - 0.5) * 720;
+    const dur = (0.55 + Math.random() * 0.35).toFixed(2) + 's';
+    const size = (60 + Math.random() * 50) + 'px';
+
+    const splat = document.createElement('div');
+    splat.className = 'tomato-splat';
+    splat.style.left = startX + 'px';
+    splat.style.top = startY + 'px';
+
+    const fly = document.createElement('span');
+    fly.textContent = '&#127813;';
+    fly.className = 'tomato-fly';
+    fly.style.setProperty('--tx', tx + 'px');
+    fly.style.setProperty('--ty', ty + 'px');
+    fly.style.setProperty('--rot', rot + 'deg');
+    fly.style.setProperty('--dur', dur);
+
+    const blob = document.createElement('div');
+    blob.className = 'splat-blob';
+    blob.style.setProperty('--size', size);
+    blob.style.setProperty('--dur', dur);
+    blob.style.left = (startX + tx - parseFloat(size) / 2) + 'px';
+    blob.style.top = (startY + ty) + 'px';
+    blob.style.position = 'absolute';
+
+    const drips = 2 + Math.floor(Math.random() * 2);
+    for (let d = 0; d < drips; d++) {
+      const drip = document.createElement('div');
+      drip.className = 'drip';
+      drip.style.setProperty('--size', size);
+      drip.style.setProperty('--dur', dur);
+      drip.style.setProperty('--drip-x', (20 + Math.random() * 60) + '%');
+      blob.appendChild(drip);
+    }
+
+    splat.appendChild(fly);
+    layer.appendChild(splat);
+    layer.appendChild(blob);
+  }
+
+  // === EGG GAME ===
+  let clickCount = 0;
+  let lastClickTime = 0;
+  let rapidStreak = 0;
+
+  function buyEgg() {
+    clickCount = 0;
+    rapidStreak = 0;
+    lastClickTime = 0;
+    document.getElementById('click-count').textContent = 'Kliknięcia: 0 / 10';
+    document.getElementById('egg-hint').textContent = 'Kliknij w jajko, żeby je wykluć!';
+
+    const egg = document.getElementById('egg-img');
+    egg.className = '';
+    egg.style.display = 'block';
+
+    document.getElementById('overlay').classList.add('active');
+    document.getElementById('msg-paczka').style.display = 'none';
+    document.getElementById('egg-game').style.display = 'flex';
+  }
+
+  function clickEgg() {
+    const now = Date.now();
+    const diff = now - lastClickTime;
+
+    if (diff < 500) {
+      rapidStreak = Math.min(rapidStreak + 1, 5);
+    } else {
+      rapidStreak = Math.max(rapidStreak - 1, 0);
+    }
+    lastClickTime = now;
+
+    clickCount++;
+    document.getElementById('click-count').textContent = 'Kliknięcia: ' + clickCount + ' / 10';
+
+    const egg = document.getElementById('egg-img');
+    egg.classList.remove('shake-light', 'shake-medium', 'shake-hard', 'hatch-out');
+
+    if (clickCount >= 10) {
+      egg.classList.add('hatch-out');
+      egg.addEventListener('animationend', activateTrap, { once: true });
+      return;
+    }
+
+    void egg.offsetWidth;
+
+    if (rapidStreak >= 4) {
+      egg.classList.add('shake-hard');
+      document.getElementById('egg-hint').textContent = '&#128165; SZALEJE!';
+    } else if (rapidStreak >= 2) {
+      egg.classList.add('shake-medium');
+      document.getElementById('egg-hint').textContent = '&#128293; Szybciej!';
+    } else {
+      egg.classList.add('shake-light');
+      document.getElementById('egg-hint').textContent = 'Kliknij w jajko, żeby je wykluć!';
+    }
+
+    egg.addEventListener('animationend', () => {
+      egg.classList.remove('shake-light', 'shake-medium', 'shake-hard');
+    }, { once: true });
+  }
+
+  function activateTrap() {
+    // Hide overlay
+    document.getElementById('overlay').classList.remove('active');
+    document.getElementById('egg-game').style.display = 'none';
+
+    // Activate video trap
+    const trap = document.getElementById('video-trap');
+    const iframe = document.getElementById('trap-iframe');
+    iframe.src = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=0&loop=1&playlist=dQw4w9WgXcQ&rel=0';
+    trap.classList.add('active');
+
+    // Try fullscreen
+    if (trap.requestFullscreen) {
+      trap.requestFullscreen().catch(() => {});
+    } else if (trap.webkitRequestFullscreen) {
+      trap.webkitRequestFullscreen();
+    }
+  }
+
+  // Fake close button – moves away when you try to click it
+  const fakeBtn = document.getElementById('fake-close');
+  fakeBtn.addEventListener('mousemove', function(e) {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const btnRect = fakeBtn.getBoundingClientRect();
+    const btnCx = btnRect.left + btnRect.width / 2;
+    const btnCy = btnRect.top + btnRect.height / 2;
+    const dx = e.clientX - btnCx;
+    const dy = e.clientY - btnCy;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 80) {
+      const nx = Math.random() * (vw - 160) + 80;
+      const ny = Math.random() * (vh - 60) + 30;
+      fakeBtn.style.position = 'fixed';
+      fakeBtn.style.left = nx + 'px';
+      fakeBtn.style.top = ny + 'px';
+      fakeBtn.style.margin = '0';
+      fakeBtn.style.transition = 'left 0.15s, top 0.15s';
+    }
+  });
+
+  function fakeTryClose() {
+    // Clicking it just replays the video
+    const iframe = document.getElementById('trap-iframe');
+    iframe.src = iframe.src;
+  }
+
+  function closeOverlay() {
+    document.getElementById('overlay').classList.remove('active');
+    document.getElementById('msg-paczka').style.display = 'none';
+    document.getElementById('egg-game').style.display = 'none';
+  }
+
+  document.getElementById('overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeOverlay();
+  });
+</script>
+
+</body>
+</html>
