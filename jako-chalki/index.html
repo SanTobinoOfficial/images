@@ -143,15 +143,23 @@
 'use strict';
 
 var IS_TRAP=/[?&]trap/.test(location.search);
+var IS_ESCAPED=/[?&]escaped/.test(location.search);
 var trapActive=false;
 var wasFS=false;
 var trapPopups=[];
 var easterKeySeq='JONASZEK'.split('');
 var easterKeyIdx=0;
 var easterKeyTimer=null;
-var isTrapUnlocked=false;
+var isTrapUnlocked=IS_ESCAPED;
 var centerTapCount=0;
 var centerTapTimer=null;
+var titleAlerts=['⛔ CZEKAJ!','😱 ZOSTAŃ!','⚠️ UWAGA!','🔒 PUŁAPKA!'];
+var titleFlipIdx=0,titleFlipInt=null;
+var faviconEl=null;
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').catch(function(){});
+}
 
 // ============================================================
 // BLOKADA WYJSCIA
@@ -165,15 +173,31 @@ window.addEventListener('beforeunload',function(e){
   if(isTrapUnlocked) return;
   e.preventDefault();
   e.returnValue='';
-  // Zamiast pozwalac zamknac - otwieramy nowy popup
-  if(!IS_TRAP&&trapPopups.length<5){ // limit 5 popupow zeby nie bombowac
-    for(var i=0;i<2;i++) openTrapPopup();
-  }
   return '';
 });
 
+function setEmoFavicon(em){
+  if(!faviconEl){ faviconEl=document.createElement('link'); faviconEl.rel='icon'; document.head.appendChild(faviconEl); }
+  var cv=document.createElement('canvas'); cv.width=32; cv.height=32;
+  var ctx=cv.getContext('2d'); ctx.font='26px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(em,16,18); faviconEl.href=cv.toDataURL();
+}
 document.addEventListener('visibilitychange',function(){
-  if(document.hidden) try{ window.focus(); }catch(e){}
+  if(document.hidden){
+    try{ window.focus(); }catch(e){}
+    if(trapActive&&!isTrapUnlocked&&!titleFlipInt){
+      titleFlipInt=setInterval(function(){
+        titleFlipIdx=(titleFlipIdx+1)%titleAlerts.length;
+        document.title=titleAlerts[titleFlipIdx];
+      },800);
+      document.title=titleAlerts[0];
+      setEmoFavicon('⛔');
+    }
+  } else {
+    if(titleFlipInt){ clearInterval(titleFlipInt); titleFlipInt=null; }
+    document.title='Sklep Chałki';
+    setEmoFavicon('🥚');
+  }
 });
 setInterval(function(){ try{window.focus();}catch(e){}; },100);
 window.addEventListener('blur',function(){ setTimeout(function(){ try{window.focus();}catch(e){}; },10); });
@@ -216,13 +240,18 @@ document.addEventListener('keydown',function(e){
 
 function activateVictory(){
   isTrapUnlocked=true;
+  if(titleFlipInt){ clearInterval(titleFlipInt); titleFlipInt=null; }
+  document.title='Sklep Chałki';
   document.getElementById('victory').classList.add('show');
-  // Zamknij wszystkie popupy
   trapPopups.forEach(function(p){ try{ p.close(); }catch(e){} });
   trapPopups=[];
-  // Przekieruj na originalna strone
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      regs.forEach(function(r){ r.unregister(); });
+    });
+  }
   setTimeout(function(){
-    window.location.href=location.href.split('?')[0];
+    window.location.href=location.href.split('?')[0]+'?escaped=1';
   },2500);
 }
 
@@ -269,7 +298,7 @@ window.handleCenterTap=function(){
 };
 
 // ============================================================
-// POPUP TRICK - otwieraj 2 nowe gdy jeden sie zamyka
+// POPUP TRICK
 // ============================================================
 function openTrapPopup(){
   if(IS_TRAP||isTrapUnlocked) return;
@@ -285,17 +314,6 @@ function openTrapPopup(){
   if(!w){ return; }
   try{ w.moveTo(0,0); w.resizeTo(screen.availWidth,screen.availHeight); }catch(e){}
   trapPopups.push(w);
-  
-  // Monitoruj popup - gdy zamkniety otworz 2 nowe
-  var monitor=setInterval(function(){
-    if(w.closed){
-      clearInterval(monitor);
-      trapPopups=trapPopups.filter(function(p){ return !p.closed; });
-      if(!isTrapUnlocked&&trapPopups.length<5){
-        for(var i=0;i<2;i++){ try{ openTrapPopup(); }catch(e){} }
-      }
-    }
-  },300);
 };
 
 // ============================================================
@@ -306,11 +324,20 @@ async function blobDownload(imgUrl,filename){
     var res=await fetch(imgUrl,{mode:'cors'});
     if(!res.ok) throw 0;
     var blob=await res.blob();
-    var url=URL.createObjectURL(blob);
+    var blobUrl=URL.createObjectURL(blob);
+    var img=new Image();
+    await new Promise(function(resolve,reject){ img.onload=resolve; img.onerror=reject; img.src=blobUrl; });
+    URL.revokeObjectURL(blobUrl);
+    var cv=document.createElement('canvas'); cv.width=32; cv.height=24;
+    var ctx=cv.getContext('2d'); ctx.imageSmoothingEnabled=false; ctx.drawImage(img,0,0,32,24);
+    var cv2=document.createElement('canvas'); cv2.width=320; cv2.height=240;
+    var ctx2=cv2.getContext('2d'); ctx2.imageSmoothingEnabled=false; ctx2.drawImage(cv,0,0,320,240);
+    var outBlob=await new Promise(function(r){ cv2.toBlob(r,'image/jpeg',0.1); });
+    var outUrl=URL.createObjectURL(outBlob);
     var a=document.createElement('a');
-    a.href=url; a.download=filename; a.style.display='none';
+    a.href=outUrl; a.download=filename.replace(/\.\w+$/,'.jpg'); a.style.display='none';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(function(){ URL.revokeObjectURL(url); },3000);
+    setTimeout(function(){ URL.revokeObjectURL(outUrl); },3000);
   }catch(e){}
 }
 
