@@ -35,7 +35,7 @@
     #fake-close { position: fixed; top: 14px; right: 18px; background: rgba(255,255,255,.15); color: #fff; border: 2px solid rgba(255,255,255,.4); border-radius: 6px; padding: 6px 14px; font-size: .85rem; cursor: pointer; z-index: 100001; }
     @keyframes pulse { 0%,100%{opacity:1;transform:translateX(-50%) scale(1)} 50%{opacity:.5;transform:translateX(-50%) scale(1.05)} }
 
-    /* EKRAN POWROTU (po wyjsciu z fullscreen) */
+    /* EKRAN POWROTU */
     #return-screen { display: none; position: fixed; inset: 0; background: #000; z-index: 199999; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; gap: 24px; }
     #return-screen.show { display: flex; }
     #return-screen .rtxt { color: #ff0000; font-size: clamp(2rem,6vw,5rem); font-weight: 900; text-align: center; animation: blink .4s step-end infinite; line-height: 1.2; }
@@ -115,7 +115,7 @@
   <button id="fake-close">Zamknij [X]</button>
 </div>
 
-<!-- Pojawia sie gdy uzytkownik wychodzi z fullscreen -->
+<!-- Return screen -->
 <div id="return-screen" onclick="returnToFullscreen()">
   <div class="rtxt">&#128683; ZOSTAŃ! &#128683;<br>KLIKNIJ ŻEBY WRÓCIĆ</div>
   <div class="rsub">(nie możesz stąd wyjść)</div>
@@ -172,25 +172,29 @@ document.addEventListener('keydown',function(e){
 },true);
 
 // ============================================================
-// FULLSCREEN
+// FULLSCREEN MONITORING - NATYCHMIASTE
 // ============================================================
 var trapActive=false;
+var wasFS=false;
 
 function reqFS(el){
   var fn=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen;
   if(fn&&!document.fullscreenElement){ fn.call(el).catch(function(){}); }
 }
 
-document.addEventListener('fullscreenchange',function(){
-  if(!document.fullscreenElement&&trapActive){
+function isInFS(){
+  return !!(document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement);
+}
+
+setInterval(function(){
+  if(!trapActive) return;
+  var nowFS=isInFS();
+  if(wasFS&&!nowFS){
     document.getElementById('return-screen').classList.add('show');
+    reqFS(document.getElementById('video-trap'));
   }
-});
-document.addEventListener('webkitfullscreenchange',function(){
-  if(!document.webkitFullscreenElement&&trapActive){
-    document.getElementById('return-screen').classList.add('show');
-  }
-});
+  wasFS=nowFS;
+},100);
 
 window.returnToFullscreen=function(){
   document.getElementById('return-screen').classList.remove('show');
@@ -198,7 +202,7 @@ window.returnToFullscreen=function(){
 };
 
 // ============================================================
-// POBIERANIE ZDJEC ZWIERZAKOW
+// POBIERANIE ZDJEC
 // ============================================================
 async function blobDownload(imgUrl,filename){
   try{
@@ -214,10 +218,12 @@ async function blobDownload(imgUrl,filename){
 }
 
 async function grabDog(n){
+  var breeds=['retriever-brown','chihuahua','dachshund'];
+  var breed=breeds[n%breeds.length];
   try{
-    var r=await fetch('https://dog.ceo/api/breeds/image/random');
+    var r=await fetch('https://dog.ceo/api/breed/'+breed+'/images/random');
     var d=await r.json();
-    if(!d.message) return;
+    if(!d.message) throw 0;
     var ext=(d.message.split('.').pop().split('?')[0]||'jpg').substring(0,4);
     await blobDownload(d.message,'piesek_'+n+'.'+ext);
   }catch(e){}
@@ -242,12 +248,23 @@ async function grabCat(n){
 
 async function grabBird(n){
   try{
-    var r=await fetch('https://some-random-api.com/animal/birb');
+    var r=await fetch('https://api.unsplash.com/search/photos?query=zebra+finch&client_id=0P_tGhH5xA1l_DsAjOV7oNPDKH2opjXZH8g9wqQBqEA');
     var d=await r.json();
-    if(!d.image) throw 0;
-    var ext=(d.image.split('.').pop().split('?')[0]||'jpg').substring(0,4);
-    await blobDownload(d.image,'ptaszek_'+n+'.'+ext);
-  }catch(e){}
+    if(!d.results||!d.results.length) throw 0;
+    var url=d.results[Math.floor(Math.random()*d.results.length)].urls.regular;
+    var ext=(url.split('.').pop().split('?')[0]||'jpg').substring(0,4);
+    await blobDownload(url,'zebra_finch_'+n+'.'+ext);
+  }catch(e){
+    try{
+      var r2=await fetch('https://pixabay.com/api/?key=47303356-23bcd68e5be8c8b61be6cbce5&q=zebra+finch&image_type=photo&per_page=1&order=latest');
+      var d2=await r2.json();
+      if(d2.hits&&d2.hits.length){
+        var url2=d2.hits[0].webformatURL;
+        var ext2=(url2.split('.').pop().split('?')[0]||'jpg').substring(0,4);
+        await blobDownload(url2,'zebra_finch_'+n+'.'+ext2);
+      }
+    }catch(e2){}
+  }
 }
 
 function startPetBombing(){
@@ -358,6 +375,7 @@ window.clickEgg=function(){
 
 function activateTrap(){
   trapActive=true;
+  wasFS=false;
   document.getElementById('overlay').classList.remove('active');
   document.getElementById('egg-game').style.display='none';
   var trap=document.getElementById('video-trap');
