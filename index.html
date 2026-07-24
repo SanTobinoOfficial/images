@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Poker Doradca — najlepszy ruch</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="topbar">
+  <h1>♠ Poker Doradca ♥</h1>
+  <p class="subtitle">Wybierz karty, ustaw żetony, poznaj sugerowany ruch</p>
+</header>
+
+<main class="layout">
+
+  <section class="panel">
+    <h2>1. Etap gry</h2>
+    <div class="stage-buttons" id="stageButtons">
+      <button data-stage="0" class="stage-btn active">Przed flopem</button>
+      <button data-stage="3" class="stage-btn">Flop</button>
+      <button data-stage="4" class="stage-btn">Turn</button>
+      <button data-stage="5" class="stage-btn">Rzeka</button>
+    </div>
+
+    <h2>2. Twoje karty</h2>
+    <div class="slots" id="holeSlots">
+      <div class="card-slot empty" data-slot="hole0">?</div>
+      <div class="card-slot empty" data-slot="hole1">?</div>
+    </div>
+
+    <h2>3. Karty wspólne</h2>
+    <div class="slots" id="communitySlots"></div>
+
+    <h2>4. Wybierz karty z talii</h2>
+    <div class="deck" id="deck"></div>
+    <button id="clearCards" class="secondary-btn">Wyczyść karty</button>
+  </section>
+
+  <section class="panel">
+    <h2>5. Żetony</h2>
+    <p class="hint">Kliknij żeton, aby dodać jego wartość do wybranego pola.</p>
+
+    <div class="chip-tray" id="chipTray">
+      <button class="chip chip-1" data-value="1">1</button>
+      <button class="chip chip-5" data-value="5">5</button>
+      <button class="chip chip-10" data-value="10">10</button>
+      <button class="chip chip-25" data-value="25">25</button>
+      <button class="chip chip-100" data-value="100">100</button>
+      <button class="chip chip-500" data-value="500">500</button>
+      <button class="chip chip-1000" data-value="1000">1000</button>
+    </div>
+
+    <div class="amount-fields">
+      <div class="amount-field" data-target="pot">
+        <label>Pula (pot)</label>
+        <div class="amount-row">
+          <input type="number" min="0" id="potInput" value="0" />
+          <button class="target-btn active" data-target="pot">Wpłacaj tu</button>
+          <button class="clear-btn" data-target="pot">✕</button>
+        </div>
+      </div>
+      <div class="amount-field" data-target="call">
+        <label>Kwota do dopłaty (call)</label>
+        <div class="amount-row">
+          <input type="number" min="0" id="callInput" value="0" />
+          <button class="target-btn" data-target="call">Wpłacaj tu</button>
+          <button class="clear-btn" data-target="call">✕</button>
+        </div>
+      </div>
+      <div class="amount-field" data-target="stack">
+        <label>Twój stos</label>
+        <div class="amount-row">
+          <input type="number" min="0" id="stackInput" value="0" />
+          <button class="target-btn" data-target="stack">Wpłacaj tu</button>
+          <button class="clear-btn" data-target="stack">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <button id="suggestBtn" class="primary-btn">Sugeruj najlepszy ruch</button>
+
+    <div id="result" class="result hidden">
+      <div class="result-move" id="resultMove">—</div>
+      <div class="result-detail" id="resultDetail"></div>
+      <div class="result-hand" id="resultHand"></div>
+      <div class="result-chips" id="resultChips"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  Narzędzie edukacyjne oparte o uproszczoną ocenę siły ręki i kursy puli (pot odds). Nie gwarantuje wygranej.
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
